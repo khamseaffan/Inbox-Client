@@ -49,7 +49,7 @@ from src.inbox_client_interface import InboxClient
 
 2. Create a class that implements the protocol:
 ```python
-class MyCalculator(InboxClient):
+class MyClient(InboxClient):
     def fetch_messages(folder: Optional[str] = "inbox") -> Any:
         #implementation here
 ```

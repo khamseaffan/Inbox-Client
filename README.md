@@ -2,7 +2,11 @@
 
 ## 📬 Description
 
-This repository defines a modular protocol-based interface for email clients (e.g., Gmail, Hotmail). It uses Python `Protocol` classes to describe standardised, mockable interfaces for both messages and inbox clients.
+This repository defines a modular protocol-based interface and implementation for gmail clients. It uses Python `Protocol` classes to describe standardised, mockable interfaces for both messages and inbox clients.
+
+## Scope
+
+This inbox client will be able to read and parse messages in your email (Gmail) and will be able to analyze these messages (e.g., sort on priority, detect phishing). The minimum viable product for our client will be a component that can read and return messages from your email. Our client will be primarily focused on Gmail and will not be able to parse messages from services other than Gmail.
 
 ## Requirements
 
