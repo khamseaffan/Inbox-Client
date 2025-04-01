@@ -46,7 +46,7 @@ members = [
 [tool.pytest.ini_options]
 pythonpath = [
     "src/inbox_client_api",
-    "src/message"
+    "src/message",
     "src",
     "."]
 testpaths = ["tests", "src"] # Include src/*/*/tests directories
