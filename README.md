@@ -42,12 +42,13 @@ This inbox client will be able to read and parse messages in your email (Gmail) 
 3. Install the project dependencies:
    ```bash
    uv sync
+   uv sync --all-packages --extra dev --extra test # if using development build
    ```
 
 ## Testing
 To run all of the test suite at once:  
 ```bash
-pytest
+pytest .
    ```  
 To run individual test files:  
 ```bash
