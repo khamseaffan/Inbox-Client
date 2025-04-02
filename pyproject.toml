@@ -6,10 +6,48 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "coverage[toml]",
+]
+dev = [
+    "inbox-client[test]",
+    "ruff",
+    "mypy",
+    "hatch",
+]
 
+
+# --- HATCH --- TODO: FIX
+[tool.hatch.envs.test]
+dependencies = [
+    "inbox-client[test]", 
+    "pytest",
+    "pytest-cov",
+    "coverage[toml]",
+]
+
+[tool.hatch.envs.test.scripts]
+# Example script definition
+cov = "pytest --cov=src --cov-report=term-missing {args:.}"
+no-cov = "pytest {args:.}"
+# Default script when running 'hatch run test' or 'hatch test'
+_ = "cov"
+# --- HATCH ---
+
+
+# --- BUILDING ---
+# No build system needed
+# !!Root is Not a Buildable Python Package!!
+# --- BUILDING ---
+
+
+# --- RUFF ---
 [tool.ruff]
 line-length = 88  # Default formatting width
-target-version = "py312"  # Adjust based on actual Python version
+target-version = "py311"  # Adjust based on actual Python version
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -31,22 +69,29 @@ ignore = [
     "F821", # Undefined name
     "PGH003", # Use specific rule codes when ignoring type issues
     "I001", # Import block is un-sorted or un-formatted
+    "N806", # We use camelCase
 ]
 
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S101", "ANN001", "ANN201"]
+# --- RUFF ---
 
+
+
+# --- WORKSPACE ---
 [tool.uv.workspace]
 members = [
     "src/inbox_client_api",
     "src/message"
 ]
+# --- WORKSPACE ---
 
+
+
+# --- PYTEST ---
 [tool.pytest.ini_options]
 pythonpath = [
-    "src/inbox_client_api",
-    "src/message",
     "src",
     "."]
 testpaths = ["tests", "src"] # Include src/*/*/tests directories
@@ -54,21 +99,31 @@ python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
 addopts = "-v --tb=short --cov=src --cov-report=term-missing"
+# --- PYTEST ---
 
+
+
+# --- MYPY ---
 [tool.mypy]
 strict = true
 explicit_package_bases = true
-mypy_path = [
-    "src/inbox_client_api",
-    "src/message"
-]
+# mypy should find workspace packages automatically with uv
+# mypy_path = [
+#     "src/inbox_client_api",
+#     "src/message"
+# ]
+# --- MYPY ---
 
 
 
+# --- COVERAGE ---
 [tool.coverage.report]
 # Lines to exclude from coverage statistics
 exclude_lines = [
     "pragma: no cover",          # Standard pragma for excluding lines
     "raise NotImplementedError", # Exclude lines raising this error
-    "if TYPE_CHECKING:"
+    "if TYPE_CHECKING:",
+    "Protocol", # Don't require coverage for Protocol definitions
+    "@abstractmethod",
 ]
+# --- COVERAGE ---
