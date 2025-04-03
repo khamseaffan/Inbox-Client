@@ -1,9 +1,9 @@
 """Unit Tests for mockedMessage Protocol."""
 
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 from collections.abc import Iterator
 
-
+@runtime_checkable
 class Message(Protocol):
     """A Mail Message."""
 
@@ -37,8 +37,7 @@ class Message(Protocol):
         """Return the body of the message."""
         raise NotImplementedError
 
-
-
 def get_message() -> Message:
     """Return an instance of a Mail Client."""
     raise NotImplementedError
+
