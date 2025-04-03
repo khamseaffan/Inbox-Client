@@ -2,7 +2,8 @@
 
 from typing import Protocol
 from collections.abc import Iterator
-from message import Message
+from src.message.src.message import Message
+
 
 class Client(Protocol):
     """Inbox Client Interface Protocol."""
