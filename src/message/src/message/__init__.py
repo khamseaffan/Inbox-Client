@@ -5,39 +5,98 @@ from collections.abc import Iterator
 
 @runtime_checkable
 class Message(Protocol):
-    """A Mail Message."""
+    """
+    A Mail Message Interface.
+
+    Represents the structure of a message object with essential attributes.
+    """
 
     @property
     def id(self) -> str:
-        """Return the id of the message."""
+        """
+        Retrieve the unique ID of the message.
+
+        Returns:
+            str: The message ID.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
+        """
         raise NotImplementedError
 
     @property
     def from_(self) -> str:
-        """Return the sender of the message."""
+        """
+        Retrieve the sender's address.
+
+        Returns:
+            str: The email address of the sender.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
+        """
         raise NotImplementedError
 
     @property
     def to(self) -> str:
-        """Return the recipient of the message."""
+        """
+        Retrieve the recipient's address.
+
+        Returns:
+            str: The email address of the recipient.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
+        """
         raise NotImplementedError
 
     @property
     def date(self) -> str:
-        """Return the date of the message."""
+        """
+        Retrieve the date the message was sent.
+
+        Returns:
+            str: The date in 'MM/DD/YYYY' format.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
+        """
         raise NotImplementedError
 
     @property
     def subject(self) -> str:
-        """Return the subject of the message."""
+        """
+        Retrieve the subject of the message.
+
+        Returns:
+            str: The subject line.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
+        """
         raise NotImplementedError
 
     @property
     def body(self) -> str:
-        """Return the body of the message."""
+        """
+        Retrieve the body of the message.
+
+        Returns:
+            str: The message content.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
+        """
         raise NotImplementedError
 
 def get_message() -> Message:
-    """Return an instance of a Mail Client."""
-    raise NotImplementedError
+    """
+    Return an instance of a Message.
 
+    Returns:
+        Message: An instance of a message object.
+
+    Raises:
+        NotImplementedError: If the method is not implemented.
+    """
+    raise NotImplementedError
