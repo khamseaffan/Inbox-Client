@@ -5,7 +5,7 @@ from prometheus_client import start_http_server
 
 from src.inbox_client_impl.src.inbox_client_impl._impl import get_client 
 from src.email_analysis_impl.src.email_analysis_impl._impl import get_analyzer
-
+from src.message_impl.src.message_impl._impl import GmailMessage
 import time
 import sys
 import logging
@@ -36,7 +36,7 @@ def run_analysis():
     print("\nFetching messages...")
     try:
         messages = client.get_messages()
-
+        logging.info(f"Fetched \n{messages} \nmessages successfully.")
         print("Processing messages:")
         message_count = 0
         for msg in messages:

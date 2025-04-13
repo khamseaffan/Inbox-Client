@@ -8,6 +8,7 @@ import base64
 import os.path
 import inbox_client_api
 import message
+from src.message_impl.src.message_impl._impl import GmailMessage
 
 class GmailClient(inbox_client_api.Client):
     SCOPES: ClassVar[list[str]] = ["https://www.googleapis.com/auth/gmail.readonly"]
@@ -30,9 +31,16 @@ class GmailClient(inbox_client_api.Client):
         results = self.service.users().messages().list(userId='me', maxResults=10).execute()
         messages = results.get('messages', [])
 
-        for msg in messages:
-            msg_data = self.service.users().messages().get(userId='me', id=msg['id'], format='raw').execute()
-            yield message.Message(msg_data)
+        for msg_summary in messages:
+            msg_id = msg_summary['id']
+            # Fetch the full message including raw data
+            msg_data = self.service.users().messages().get(userId='me', id=msg_id, format='raw').execute()
+            raw_email_data = msg_data.get('raw') # Get the 'raw' field
+            if raw_email_data:
+                 yield GmailMessage(msg_id=msg_id, raw_data=raw_email_data)
+            else:
+                 logging.warning(f"Raw data missing for message ID {msg_id}, skipping.")
+
 
 def get_client() -> GmailClient:
     return GmailClient()
