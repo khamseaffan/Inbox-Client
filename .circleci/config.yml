@@ -40,7 +40,7 @@ jobs:
           paths:
             - .
 
-# Job 2: Linting and Formatting Checks
+  # Job 2: Linting and Formatting Checks
   lint:
     docker:
       - image: cimg/python:3.13
