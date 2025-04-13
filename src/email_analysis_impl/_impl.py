@@ -24,6 +24,10 @@ emails_marked_high_importance_total = Counter(
     "emails_marked_high_importance_total", "Total number of emails marked high importance"
 )
 
+emails_marked_low_importance_total = Counter(
+    "emails_marked_low_importance_total", "Total number of emails marked LOW importance"
+)
+
 email_analysis_duration_seconds = Histogram(
     "email_analysis_duration_seconds", "Time spent analyzing each email"
 )
@@ -71,6 +75,7 @@ class LLMAnalyzer:
             logging.info("Email marked as HIGH importance.")
         elif re.search(r'\blow priority\b|\bignore\b', lower_body):
             importance = "low"
+            emails_marked_low_importance_total.inc()
             logging.info("Email marked as LOW importance.")
         else:
             importance = "normal"
