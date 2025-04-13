@@ -87,4 +87,4 @@ class LLMAnalyzer:
         }
 
 def get_analyzer() -> LLMAnalyzer:
-    return LLMAnalyzer
+    return LLMAnalyzer()

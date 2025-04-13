@@ -1,4 +1,4 @@
-from src.email_analysis_impl._impl import LLMAnalyzer
+from email_analysis_impl.src.email_analysis_impl._impl import LLMAnalyzer
 
 class MockLLMAnalyzer:
     """

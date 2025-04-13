@@ -1,12 +1,11 @@
 [project]
-name = "GmailClient"
+name = "email-analysis-api"
 version = "0.1.0"
-description = "Gmail Inbox Client Implementation"
+description = "Email Analyzer Protocol"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "message",
-    "inbox-client-api",
 ]
   
 [build-system]
@@ -15,4 +14,3 @@ build-backend = "hatchling.build"
 
 [tool.uv.sources]
 message = { workspace = true }
-inbox-client-api = { workspace = true }

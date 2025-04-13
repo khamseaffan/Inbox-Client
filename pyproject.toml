@@ -5,7 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "prometheus-client"
+    "prometheus-client",
+    "google-api-python-client",
+    "google-auth-httplib2",
+    "google-auth-oauthlib",
 ]
 
 [project.optional-dependencies]
@@ -85,7 +88,8 @@ ignore = [
 [tool.uv.workspace]
 members = [
     "src/inbox_client_api",
-    "src/message"
+    "src/message",
+    "src/email_analysis_api"
 ]
 # --- WORKSPACE ---
 

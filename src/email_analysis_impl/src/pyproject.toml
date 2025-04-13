@@ -1,10 +1,14 @@
 [project]
-name = "Email Analysis"
+name = "EmailAnalysis"
 version = "0.1.0"
 description = "Email Analyzer Protocol"
 readme = "README.md"
 requires-python = ">=3.11"
 
+dependencies = [
+    "message",
+    "email-analysis-api",
+]
   
 [build-system]
 requires = ["hatchling"]
@@ -12,3 +16,4 @@ build-backend = "hatchling.build"
 
 [tool.uv.sources]
 message = { workspace = true }
+email-analysis-api = { workspace = true }
