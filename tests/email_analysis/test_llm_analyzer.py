@@ -28,6 +28,11 @@ def test_analyze_low_priority():
     assert result["importance"] == "low"
     assert result["spam"] is False
 
+def test_analyzer_detects_low_importance():
+    analyzer = LLMAnalyzer()
+    low_email = "You can ignore this message or mark it as low priority."
+    result = analyzer.analyze(low_email)
+    assert result["importance"] == "low"
 
 @pytest.mark.parametrize("text,expected_spam,expected_importance", [
     ("Buy now and save!", True, "normal"),
