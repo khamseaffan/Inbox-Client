@@ -45,3 +45,6 @@ class LLMAnalyzer:
             "spam": is_spam,
             "importance": importance
         }
+
+def get_analyzer() -> LLMAnalyzer:
+    return LLMAnalyzer
