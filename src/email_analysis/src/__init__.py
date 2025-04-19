@@ -2,6 +2,7 @@
 
 from typing import Protocol
 
+
 class Analyzer(Protocol):
     """
     An email analyzer protocol.
@@ -24,6 +25,7 @@ class Analyzer(Protocol):
 
         """
         raise NotImplementedError
+
 
 def get_analyzer() -> Analyzer:
     """
