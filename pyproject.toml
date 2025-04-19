@@ -111,6 +111,7 @@ addopts = "-v --tb=short --cov=src --cov-report=term-missing"
 [tool.mypy]
 strict = true
 explicit_package_bases = true
+ignore_missing_imports = true
 # mypy should find workspace packages automatically with uv
 # mypy_path = [
 #     "src/inbox_client_api",
