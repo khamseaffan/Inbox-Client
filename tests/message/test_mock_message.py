@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 "Unit Tests for mocked Message Protocol"
 
+
 def test_id() -> None:
     """Test id method."""
     mockedMessage: Message = Mock()
@@ -17,6 +18,7 @@ def test_id() -> None:
     result = mockedMessage.id()
     assert isinstance(result, str), f"Expected type str, but got {type(result)}"
     assert result == "123", f"Expected value '123', but got '{result}'"
+
 
 def test_from() -> None:
     """Test from method."""
@@ -26,6 +28,7 @@ def test_from() -> None:
     assert isinstance(result, str), f"Expected type str, but got {type(result)}"
     assert result == "John", f"Expected value 'John', but got '{result}'"
 
+
 def test_to() -> None:
     """Test to method."""
     mockedMessage: Message = Mock()
@@ -33,6 +36,7 @@ def test_to() -> None:
     result = mockedMessage.to()
     assert isinstance(result, str), f"Expected type str, but got {type(result)}"
     assert result == "Sally", f"Expected value 'Sally', but got '{result}'"
+
 
 def test_date() -> None:
     """Test date method."""
@@ -42,6 +46,7 @@ def test_date() -> None:
     assert isinstance(result, str), f"Expected type str, but got {type(result)}"
     assert result == "10/1/2020", f"Expected value '10/1/2020', but got '{result}'"
 
+
 def test_subject() -> None:
     """Test subject method."""
     mockedMessage: Message = Mock()
@@ -50,10 +55,13 @@ def test_subject() -> None:
     assert isinstance(result, str), f"Expected type str, but got {type(result)}"
     assert result == "Work", f"Expected value 'Work', but got '{result}'"
 
+
 def test_body() -> None:
     """Test body method."""
     mockedMessage: Message = Mock()
     mockedMessage.body.return_value = "We need to meet"
     result = mockedMessage.body()
     assert isinstance(result, str), f"Expected type str, but got {type(result)}"
-    assert result == "We need to meet", f"Expected value 'We need to meet', but got '{result}'"
+    assert result == "We need to meet", (
+        f"Expected value 'We need to meet', but got '{result}'"
+    )

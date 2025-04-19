@@ -4,6 +4,7 @@ from typing import Protocol
 from collections.abc import Iterator
 from src.message.src.message import Message
 
+
 class Client(Protocol):
     """
     Inbox Client Interface Protocol.
@@ -21,6 +22,7 @@ class Client(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented by the subclass.
+
         """
         raise NotImplementedError
 
@@ -28,7 +30,7 @@ class Client(Protocol):
         """
         Send a message to the specified recipient.
 
-        Parameters:
+        Args:
             to (str): The email address of the recipient.
             subject (str): The subject line of the message.
             body (str): The content of the message.
@@ -38,6 +40,7 @@ class Client(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented by the subclass.
+
         """
         raise NotImplementedError
 
@@ -45,7 +48,7 @@ class Client(Protocol):
         """
         Delete a message by its unique identifier.
 
-        Parameters:
+        Args:
             message_id (str): The unique ID of the message to be deleted.
 
         Returns:
@@ -53,6 +56,7 @@ class Client(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented by the subclass.
+
         """
         raise NotImplementedError
 
@@ -60,7 +64,7 @@ class Client(Protocol):
         """
         Mark a message as read using its unique identifier.
 
-        Parameters:
+        Args:
             message_id (str): The unique ID of the message to be marked as read.
 
         Returns:
@@ -68,8 +72,10 @@ class Client(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented by the subclass.
+
         """
         raise NotImplementedError
+
 
 def get_client() -> Client:
     """
@@ -80,5 +86,6 @@ def get_client() -> Client:
 
     Raises:
         NotImplementedError: If the method is not implemented.
+
     """
     raise NotImplementedError

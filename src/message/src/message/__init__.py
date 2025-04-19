@@ -3,6 +3,7 @@
 from typing import Protocol, runtime_checkable
 from collections.abc import Iterator
 
+
 @runtime_checkable
 class Message(Protocol):
     """
@@ -21,6 +22,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -34,6 +36,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -47,6 +50,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -60,6 +64,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -73,6 +78,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -86,8 +92,10 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
+
 
 def get_message() -> Message:
     """
@@ -98,5 +106,6 @@ def get_message() -> Message:
 
     Raises:
         NotImplementedError: If the method is not implemented.
+
     """
     raise NotImplementedError
