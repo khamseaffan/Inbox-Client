@@ -115,7 +115,8 @@ ignore_missing_imports = true
 # mypy should find workspace packages automatically with uv
 # mypy_path = [
 #     "src/inbox_client_api",
-#     "src/message"
+#     "src/message",
+#     "src/email_analysis"
 # ]
 # --- MYPY ---
 

@@ -1,5 +1,5 @@
 [project]
-name = "Email Analysis"
+name = "email-analysis"
 version = "0.1.0"
 description = "Email Analyzer Protocol"
 readme = "README.md"
