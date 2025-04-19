@@ -11,7 +11,7 @@ def test_analyze() -> None:
     """Test analyze method returns a dict."""
     analyzer = Mock(spec=Analyzer)
     # Simulate analyze returning a dictionary.
-    mock_dict = {}
+    mock_dict: dict[str, str] = {}
     mock_email = ""
     analyzer.analyze.return_value = mock_dict
     result = analyzer.analyze(mock_email)

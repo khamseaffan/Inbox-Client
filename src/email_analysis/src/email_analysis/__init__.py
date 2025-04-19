@@ -10,7 +10,7 @@ class Analyzer(Protocol):
     Defines the structure for email analyzer to parse given messages,
     """
 
-    def analyze(self, email: str) -> dict:
+    def analyze(self, email: str) -> dict[str, str]:
         """
         Perform analysis on a given email.
 
