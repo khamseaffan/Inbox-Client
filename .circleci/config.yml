@@ -40,21 +40,7 @@ jobs:
           paths:
             - .
 
-# Job 2: Linting and Formatting Checks
-  lint:
-    docker:
-      - image: cimg/python:3.13
-    steps:
-      - attach_workspace:
-          at: . # Attach the workspace persisted from 'setup'
-      - run:
-          name: "Run Linting and Formatting Checks"
-          command: |
-            source .venv/bin/activate # Activate the venv from the workspace
-            # Use --check for formatting in CI to avoid changing files
-            ruff format --check .
-            ruff check .
-
+# Job 2: Combined Linting and Testing
   test:
     docker:
       - image: cimg/python:3.13
@@ -64,6 +50,26 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: "Install UV and Add to Path"
+          command: |
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
+            uv --version
+      - run:
+          name: "Create Virtual Env & Install All Dependencies via UV Sync"
+          command: |
+            uv venv .venv --python 3.13
+            source .venv/bin/activate
+            uv sync --all-packages --extra test --extra dev --verbose
+      - run:
+          name: "Run Linting and Formatting Checks"
+          command: |
+            source .venv/bin/activate # Activate the venv from the workspace
+            # Use --check for formatting in CI to avoid changing files
+            ruff format --check .
+            ruff check .
       - run:
           name: "Activate Venv and Create Test Results Directory"
           command: |
@@ -107,11 +113,22 @@ jobs:
 
   report-results:
     docker:
-      - image: cimg/python:3.12
+      - image: cimg/python:3.13
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+      - run:
+          name: "Install UV and Add to Path"
+          command: |
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $BASH_ENV
+            source $BASH_ENV
+            uv --version
+      - run:
+          name: "Create Virtual Env & Install All Dependencies via UV Sync"
+          command: |
+            uv venv .venv --python 3.13
+            source .venv/bin/activate
+            uv sync --all-packages --extra test --extra dev --verbose
       - run:
           name: "Summarize test results"
           command: |
