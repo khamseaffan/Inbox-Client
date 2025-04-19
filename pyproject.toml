@@ -86,8 +86,8 @@ members = [
     "src/inbox_client_impl",
     "src/message",
     "src/message_impl",
-    "src/email_analysis_api",
-    "src/email_analysis_impl"
+    "src/email_analysis",
+    "src/email_analysis_impl",
 ]
 # --- WORKSPACE ---
 
