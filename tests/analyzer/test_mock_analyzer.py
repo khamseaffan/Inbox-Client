@@ -10,10 +10,10 @@ from email_analysis import Analyzer
 def test_analyze() -> None:
     """Test analyze method returns a dict."""
     analyzer = Mock(spec=Analyzer)
-    # Simulate analyze returning a dictionary with 
+    # Simulate analyze returning a dictionary.
     mock_dict = {}
     mock_email = ""
     analyzer.analyze.return_value = mock_dict
     result = analyzer.analyze(mock_email)
-    # Check that result is a dict 
+    # Check that result is a dict.
     assert isinstance(result, dict)

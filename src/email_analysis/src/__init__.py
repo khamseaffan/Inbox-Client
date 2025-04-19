@@ -1,4 +1,4 @@
-"""Message Analyzer Protocol"""
+"""Message Analyzer Protocol."""
 
 from typing import Protocol
 
@@ -14,13 +14,14 @@ class Analyzer(Protocol):
         Perform analysis on a given email.
 
         Args:
-            email (str): The given email to analyze. 
+            email (str): The given email to analyze.
 
         Returns:
             dict: A dict of information about the email.
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -33,5 +34,6 @@ def get_analyzer() -> Analyzer:
 
     Raises:
         NotImplementedError: If the method is not implemented.
+
     """
     raise NotImplementedError
