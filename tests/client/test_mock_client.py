@@ -3,8 +3,8 @@ from collections.abc import Iterator
 
 import pytest
 
-from src.inbox_client_api.src.inbox_client_api import Client
-from src.message.src.message import Message
+from inbox_client_api import Client
+from message import Message
 
 "Unit Tests for Client Protocol"
 

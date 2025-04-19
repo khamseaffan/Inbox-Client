@@ -83,7 +83,11 @@ ignore = [
 [tool.uv.workspace]
 members = [
     "src/inbox_client_api",
-    "src/message"
+    "src/inbox_client_impl",
+    "src/message",
+    "src/message_impl",
+    "src/email_analysis_api",
+    "src/email_analysis_impl"
 ]
 # --- WORKSPACE ---
 
