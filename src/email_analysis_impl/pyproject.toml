@@ -1,12 +1,10 @@
 [project]
-name = "inbox_client_impl"
+name = "email_analysis_impl"
 version = "0.1.0"
-description = "Gmail Inbox Client Implementation"
+description = "Email Analyzer Implementation"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [
-    "message",
-]
+
   
 [build-system]
 requires = ["hatchling"]
