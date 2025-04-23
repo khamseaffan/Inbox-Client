@@ -98,6 +98,13 @@ jobs:
             else
               echo "nose2 is not installed. This step will be skipped."
             fi
+      - run:
+          name: "Start app and check Prometheus metrics"
+          command: |
+            source .venv/bin/activate
+            nohup python main.py > /dev/null 2>&1 &
+            sleep 3
+            curl --fail http://localhost:8000/metrics | grep "emails_"
       - store_test_results:
           path: test-results
       - store_artifacts:
