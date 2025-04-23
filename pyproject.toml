@@ -4,9 +4,7 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [
-    "prometheus-client"
-]
+dependencies = []
 
 [project.optional-dependencies]
 test = [
@@ -84,8 +82,12 @@ ignore = [
 # --- WORKSPACE ---
 [tool.uv.workspace]
 members = [
-    "src/inbox_client_api",
-    "src/message"
+    "src/email_analysis",
+    "src/email_analysis_impl",
+    "src/inbox_client",
+    "src/inbox_client_impl",
+    "src/message",
+    "src/message_impl"
 ]
 # --- WORKSPACE ---
 
@@ -94,6 +96,12 @@ members = [
 # --- PYTEST ---
 [tool.pytest.ini_options]
 pythonpath = [
+    "src/email_analysis",
+    "src/email_analysis_impl",
+    "src/inbox_client",
+    "src/inbox_client_impl",
+    "src/message",
+    "src/message_impl",
     "src",
     "."]
 testpaths = ["tests", "src"] # Include src/*/*/tests directories
@@ -109,11 +117,14 @@ addopts = "-v --tb=short --cov=src --cov-report=term-missing"
 [tool.mypy]
 strict = true
 explicit_package_bases = true
-# mypy should find workspace packages automatically with uv
-# mypy_path = [
-#     "src/inbox_client_api",
-#     "src/message"
-# ]
+mypy_path = [
+    "src/email_analysis",
+    "src/email_analysis_impl",
+    "src/inbox_client",
+    "src/inbox_client_impl",
+    "src/message",
+    "src/message_impl",
+]
 # --- MYPY ---
 
 
