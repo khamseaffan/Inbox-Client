@@ -6,7 +6,23 @@ import pytest
 from src.inbox_client_api.src.inbox_client_api import Client
 from src.message.src.message import Message
 
+from src.inbox_client_impl.src.inbox_client_impl._impl import GmailClient
+
 "Unit Tests for Client Protocol"
+class MockGmailClient(GmailClient):
+    def __init__(self):
+        self.sent_messages = []
+        self.deleted_messages = []
+        self.read_messages = []
+
+    def send(self, message):
+        self.sent_messages.append(message)
+
+    def delete(self, message_id):
+        self.deleted_messages.append(message_id)
+
+    def mark_as_read(self, message_id):
+        self.read_messages.append(message_id)
 
 def test_get_messages() -> None:
     """Test get_messages method returns an iterator of Message objects."""
@@ -14,7 +30,7 @@ def test_get_messages() -> None:
     msg_mock = Mock(spec=Message)
     # Simulate get_messages returning an iterator with one dummy message
     client.get_messages.return_value = iter([msg_mock])
-    result = client.get_messages() 
+    result = client.get_messages()
     # Check that result is an iterator by verifying the presence of __iter__ and __next__
     assert hasattr(result, '__iter__') and hasattr(result, '__next__')
     msgs = list(result)

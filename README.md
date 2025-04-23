@@ -135,6 +135,35 @@ To run individual tests within a file:
 pytest <path-to-specific-test-file::name-of-individual-test>
 ```
 
+## Prometheus Metrics
+
+This project exposes metrics compatible with Prometheus for monitoring email client operations.
+
+### How to Access
+
+When the application is running, Prometheus metrics are available at:
+
+```
+http://localhost:8000/metrics
+```
+
+### Available Metrics
+
+- `emails_processed_total`: Counter for total number of emails retrieved or analyzed.
+- `emails_sent_total`: Counter for emails sent through the client.
+- `email_processing_duration_seconds`: Histogram tracking how long email analysis or send operations take.
+
+### Prometheus Configuration Example
+
+To scrape these metrics, add the following to your `prometheus.yml` configuration:
+
+```yaml
+scrape_configs:
+  - job_name: 'inbox_client'
+    static_configs:
+      - targets: ['localhost:8000']
+```
+
 ### Contributions
 
 We welcome any and all contributions and will be using GitHub to track bugs, feature requests, and pull requests.  
