@@ -4,10 +4,12 @@ from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
+from email.mime.text import MIMEText
 import base64
 import os.path
 import inbox_client_api
 import message
+import logging
 from src.message_impl.src.message_impl._impl import GmailMessage
 
 class GmailClient(inbox_client_api.Client):
@@ -40,8 +42,39 @@ class GmailClient(inbox_client_api.Client):
                  yield GmailMessage(msg_id=msg_id, raw_data=raw_email_data)
             else:
                  logging.warning(f"Raw data missing for message ID {msg_id}, skipping.")
+    def send_message(self, to, body) -> bool:
+        try:
+            message = MIMEText(body)
+            message['to'] = to
+            message['subject'] = 'No Subject'
+            raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
+            message_body = {'raw': raw}
+            self.service.users().messages().send(userId='me', body=message_body).execute()
+            return True
+        except Exception as e:
+            logging.error(f"Failed to send message: {e}")
+            return False
+    
+    def delete_message(self, message_id) -> bool:
+        try:
+            self.service.users().messages().delete(userId='me', id=message_id).execute()
+            return True
+        except Exception as e:
+            logging.error(f"Failed to delete message {message_id}: {e}")
+            return False
+    def mark_as_read(self, message_id) -> bool:
+        try:
+            self.service.users().messages().modify(
+                userId='me',
+                id=message_id,
+                body={'removeLabelIds': ['UNREAD']}
+            ).execute()
+            return True
+        except Exception as e:
+            logging.error(f"Failed to mark message {message_id} as read: {e}")
+            return False
 
-
+    
 def get_client() -> GmailClient:
     return GmailClient()
 
