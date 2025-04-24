@@ -22,7 +22,8 @@ dev = [
     "mypy",
     "hatch",
     "pytest",
-    "mypy"
+    "mypy",
+    "git-filter-repo"
 ]
 
 

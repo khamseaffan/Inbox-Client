@@ -8,7 +8,7 @@ jobs:
   # Job 1: Setup Environment and Install All Dependencies
   build:
     docker:
-      - image: cimg/python:3.13
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
@@ -22,7 +22,7 @@ jobs:
       - run:
           name: "Create Virtual Env & Install All Dependencies via UV Sync"
           command: |
-            uv venv .venv --python 3.13 # Create venv with specific python
+            uv venv .venv --python 3.11 # Create venv with specific python
             source .venv/bin/activate
             uv sync --all-packages --extra test --extra dev --verbose
       - run:
@@ -43,7 +43,7 @@ jobs:
   # Job 2: Linting and Formatting Checks
   lint:
     docker:
-      - image: cimg/python:3.13
+      - image: cimg/python:3.11
     steps:
       - attach_workspace:
           at: . # Attach the workspace persisted from 'setup'
@@ -57,7 +57,7 @@ jobs:
 
   test:
     docker:
-      - image: cimg/python:3.13
+      - image: cimg/python:3.11
     environment:
       PYTHONPATH: .
     steps:

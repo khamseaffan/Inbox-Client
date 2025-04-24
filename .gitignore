@@ -180,3 +180,4 @@ cython_debug/
 .pypirc
 src/inbox_client_impl/src/tests/credentials.json
 credentials.json
+token.json
