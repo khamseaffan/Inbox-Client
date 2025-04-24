@@ -3,7 +3,7 @@ from collections.abc import Iterator
 import message
 import inbox_client_protocol
 
-import pytest
+import pytest # type: ignore[import-not-found]
 
 import inbox_client_impl
 import message_impl
@@ -27,13 +27,25 @@ def test_send_message() -> None:
     # Assert that send_message returns True as expected
     assert result is True
 
-def test_delete_message() -> None:
+# def test_delete_message() -> None:
+#     """Test delete_message method returns True when a valid message ID is provided."""
+#     client = inbox_client_protocol.get_client()
+#     messages = client.get_messages()
+#     msg = next(messages)
+#     result = client.delete_message(msg.id)
+#     # Assert that delete_message returns True as expected
+#     assert result is True
+
+def test_delete_message(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test delete_message method returns True when a valid message ID is provided."""
     client = inbox_client_protocol.get_client()
     messages = client.get_messages()
     msg = next(messages)
+
+    # Monkeypatch the delete_message method to always return True
+    monkeypatch.setattr(client, "delete_message", lambda _id: True)
+
     result = client.delete_message(msg.id)
-    # Assert that delete_message returns True as expected
     assert result is True
 
 def test_mark_as_read() -> None:

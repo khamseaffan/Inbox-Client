@@ -1,10 +1,10 @@
 
 from typing import ClassVar, Optional
 from collections.abc import Iterator
-from googleapiclient.discovery import build, Resource # type: ignore[import-untyped]
-from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow # type: ignore[import-untyped]
-from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build, Resource # type: ignore[import-not-found]
+from google.auth.transport.requests import Request # type: ignore[import-not-found]
+from google_auth_oauthlib.flow import InstalledAppFlow # type: ignore[import-not-found]
+from google.oauth2.credentials import Credentials # type: ignore[import-not-found]
 import base64
 import os.path
 import email  # Needed for sending
@@ -38,7 +38,7 @@ class GmailClient(inbox_client_protocol.Client):
         if client_id and client_secret and refresh_token:
             print("Attempting to authenticate using environment variables (CI mode)...")
             try:
-                creds = Credentials( # type: ignore[no-untyped-call]
+                creds = Credentials(
                     None,
                     refresh_token=refresh_token,
                     token_uri=token_uri,
@@ -46,7 +46,7 @@ class GmailClient(inbox_client_protocol.Client):
                     client_secret=client_secret,
                     scopes=self.SCOPES
                 )
-                creds.refresh(Request()) # type: ignore[no-untyped-call]
+                creds.refresh(Request())
                 print("Authentication via environment variables successful.")
             except Exception as e:
                 print(f"Error refreshing token from environment variables: {e}")
@@ -60,7 +60,7 @@ class GmailClient(inbox_client_protocol.Client):
 
             if os.path.exists(token_path): #noqa: PTH110
                 try:
-                    creds = Credentials.from_authorized_user_file( # type: ignore[no-untyped-call]
+                    creds = Credentials.from_authorized_user_file(
                         token_path, self.SCOPES
                     )
                 except Exception as e:
@@ -72,7 +72,7 @@ class GmailClient(inbox_client_protocol.Client):
                 if creds and creds.expired and creds.refresh_token:
                     print("Refreshing token from file...")
                     try:
-                        creds.refresh(Request()) # type: ignore[no-untyped-call]
+                        creds.refresh(Request())
                     except Exception as e:
                          print(f"Error refreshing token from file: {e}")
                          creds = None # Force re-auth if refresh fails
@@ -96,7 +96,7 @@ class GmailClient(inbox_client_protocol.Client):
                 if creds:
                     try:
                         with open(token_path, "w") as token:
-                            token.write(creds.to_json()) # type: ignore[no-untyped-call]
+                            token.write(creds.to_json())
                         print(f"Credentials saved to {token_path}")
                     except Exception as e:
                          print(f"Error saving token to {token_path}: {e}")

@@ -1,5 +1,5 @@
 import base64
-import pytest
+import pytest # type: ignore[import-not-found]
 import message  # Import the message protocol package
 import inbox_client_protocol # Import the client protocol package
 
@@ -7,7 +7,7 @@ import inbox_client_protocol # Import the client protocol package
 import message_impl
 import inbox_client_impl
 
-@pytest.mark.integration
+@pytest.mark.integration # type: ignore[misc]
 def test_get_message_factory() -> None:
     """Test that the message factory function can be called."""
     # Use dummy data for this basic check
@@ -18,7 +18,7 @@ def test_get_message_factory() -> None:
     assert msg is not None
     assert msg.id == dummy_id
 
-@pytest.mark.integration
+@pytest.mark.integration # type: ignore[misc]
 def test_get_client_factory() -> None:
     """Test that the client factory function can be called."""
     # This test will likely fail in CI without mocking or real credentials
