@@ -1,5 +1,5 @@
-from typing import ClassVar, Iterator
-from googleapiclient.discovery import build
+from typing import ClassVar, Iterator, Optional # Added Optional
+from googleapiclient.discovery import build, Resource
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
@@ -19,33 +19,35 @@ class GmailClient(inbox_client_protocol.Client):
         "https://www.googleapis.com/auth/gmail.modify"
     ]
 
-    def __init__(self):
-        creds = None
-        # Consider making these paths configurable or relative to a project root
-        token_path = "token.json"
-        creds_path = "credentials.json"
+    def __init__(self, service: Optional[Resource] = None):
+        if service:
+            self.service = service
+        else:
+            # Only perform auth flow if service wasn't provided
+            creds = None
+            token_path = "token.json"
+            creds_path = "credentials.json"
 
-        if os.path.exists(token_path):
-            creds = Credentials.from_authorized_user_file(
-                token_path, self.SCOPES
-            )
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                # Ensure credentials.json exists or handle the error
-                if not os.path.exists(creds_path):
-                    raise FileNotFoundError(
-                        f"'{creds_path}' not found. Please download client secrets."
-                    )
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    creds_path, self.SCOPES
+            if os.path.exists(token_path):
+                creds = Credentials.from_authorized_user_file(
+                    token_path, self.SCOPES
                 )
-                creds = flow.run_local_server(port=0)
-            # Save the credentials for the next run
-            with open(token_path, "w") as token:
-                token.write(creds.to_json())
-        self.service = build("gmail", "v1", credentials=creds)
+            if not creds or not creds.valid:
+                if creds and creds.expired and creds.refresh_token:
+                    creds.refresh(Request())
+                else:
+                    if not os.path.exists(creds_path):
+                        raise FileNotFoundError(
+                            f"'{creds_path}' not found. Please download client secrets."
+                        )
+                    flow = InstalledAppFlow.from_client_secrets_file(
+                        creds_path, self.SCOPES
+                    )
+                    creds = flow.run_local_server(port=0)
+                with open(token_path, "w") as token:
+                    token.write(creds.to_json())
+            self.service = build("gmail", "v1", credentials=creds)
+
 
     def get_messages(self) -> Iterator[message.Message]:
         """Fetches messages from Gmail and yields Message instances via factory."""
