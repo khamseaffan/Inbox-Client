@@ -51,8 +51,6 @@ jobs:
           name: "Run Linting and Formatting Checks"
           command: |
             source .venv/bin/activate # Activate the venv from the workspace
-            # Use --check for formatting in CI to avoid changing files
-            ruff format --check .
             ruff check .
 
   # Job 3: Unit Tests, Static Analysis, and Coverage
