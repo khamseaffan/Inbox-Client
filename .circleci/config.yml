@@ -62,13 +62,16 @@ jobs:
       PYTHONPATH: .
     steps:
       - checkout
-      - attach_workspace:
-          at: .
       - run:
-          name: "Activate Venv and Create Test Results Directory"
+          name: "Create and Activate Virtual Environment"
           command: |
+            uv venv .venv --python 3.13
             source .venv/bin/activate
-            mkdir -p test-results # Create directory for JUnit XML
+            uv sync --all-packages --extra test --extra dev --verbose
+      - run:
+          name: "Create Test Results Directory"
+          command: |
+            mkdir -p test-results
       - run:
           name: "Execute Test Suite (pytest + coverage)"
           command: |
