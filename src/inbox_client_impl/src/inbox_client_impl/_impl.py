@@ -21,39 +21,97 @@ class GmailClient(inbox_client_protocol.Client):
         "https://www.googleapis.com/auth/gmail.modify"
     ]
 
-    def __init__(self, service: Resource | None = None):
+    def __init__(self, service: Optional[Resource] = None):
         if service:
             self.service = service
-        else:
-            # Only perform auth flow if service wasn't provided
-            creds = None
+            return # Skip auth if service is provided
+
+        creds: Optional[Credentials] = None
+
+        # Check for CircleCI Environment Variables First
+        client_id = os.environ.get("GMAIL_CLIENT_ID")
+        client_secret = os.environ.get("GMAIL_CLIENT_SECRET")
+        refresh_token = os.environ.get("GMAIL_REFRESH_TOKEN")
+        token_uri = os.environ.get("GMAIL_TOKEN_URI", "https://oauth2.googleapis.com/token") 
+
+        if client_id and client_secret and refresh_token:
+            print("Attempting to authenticate using environment variables (CI mode)...") 
+            try:
+                creds = Credentials( # type: ignore[no-untyped-call]
+                    None, 
+                    refresh_token=refresh_token,
+                    token_uri=token_uri,
+                    client_id=client_id,
+                    client_secret=client_secret,
+                    scopes=self.SCOPES
+                )
+                creds.refresh(Request()) # type: ignore[no-untyped-call]
+                print("Authentication via environment variables successful.") 
+            except Exception as e:
+                print(f"Error refreshing token from environment variables: {e}") 
+                creds = None # Ensure creds is None if refresh fails
+
+        # Fallback to file-based auth if env vars failed or aren't present
+        if not creds:
+            print("Attempting to authenticate using local files...") 
             token_path = "token.json"
             creds_path = "credentials.json"
 
             if os.path.exists(token_path):
-                # Ignoring the call if the import ignore wasn't sufficient
-                creds = Credentials.from_authorized_user_file( # type: ignore[no-untyped-call]
-                    token_path, self.SCOPES
-                )
+                try:
+                    creds = Credentials.from_authorized_user_file( # type: ignore[no-untyped-call]
+                        token_path, self.SCOPES
+                    )
+                except Exception as e:
+                     print(f"Error loading token from {token_path}: {e}") 
+                     creds = None # Ensure creds is None if loading fails
+
+            # If there are no (valid) credentials available, let the user log in.
             if not creds or not creds.valid:
                 if creds and creds.expired and creds.refresh_token:
-                    # Ignoring the call if the import ignore wasn't sufficient
-                    creds.refresh(Request()) # type: ignore[no-untyped-call]
+                    print("Refreshing token from file...") 
+                    try:
+                        creds.refresh(Request()) # type: ignore[no-untyped-call]
+                    except Exception as e:
+                         print(f"Error refreshing token from file: {e}") 
+                         creds = None # Force re-auth if refresh fails
                 else:
+                    # Run the interactive flow only if absolutely necessary
+                    print("Running interactive authentication flow...") 
                     if not os.path.exists(creds_path):
+                        # This error should only happen in local dev if file is missing
                         raise FileNotFoundError(
-                            f"'{creds_path}' not found. Please download client secrets."
+                            f"'{creds_path}' not found. Cannot run interactive auth."
                         )
-                    # Ignoring the call if the import ignore wasn't sufficient
-                    flow = InstalledAppFlow.from_client_secrets_file(
-                        creds_path, self.SCOPES
-                    )
-                    # Ignoring the call if the import ignore wasn't sufficient
-                    creds = flow.run_local_server(port=0)
-                with open(token_path, "w") as token:
-                    token.write(creds.to_json())
-            # Ignoring the call if the import ignore wasn't sufficient
+                    try:
+                        flow = InstalledAppFlow.from_client_secrets_file(
+                            creds_path, self.SCOPES
+                        )
+                        creds = flow.run_local_server(port=0)
+                    except Exception as e:
+                         print(f"Error during interactive auth flow: {e}") # 
+                         raise # Re-raise the exception if interactive flow fails
+
+                # Save the credentials for the next run (only if obtained interactively or refreshed)
+                if creds:
+                    try:
+                        with open(token_path, "w") as token:
+                            token.write(creds.to_json()) # type: ignore[no-untyped-call]
+                        print(f"Credentials saved to {token_path}") 
+                    except Exception as e:
+                         print(f"Error saving token to {token_path}: {e}") 
+
+        # Final check if credentials were obtained
+        if not creds:
+             raise RuntimeError("Failed to obtain valid credentials.") # Or a more specific exception
+
+        # Build the service object
+        try:
             self.service = build("gmail", "v1", credentials=creds)
+            print("Gmail service built successfully.") 
+        except Exception as e:
+            print(f"Error building Gmail service: {e}") 
+            raise # Re-raise the exception
 
 
     def get_messages(self) -> Iterator[message.Message]:

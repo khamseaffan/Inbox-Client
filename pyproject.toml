@@ -4,7 +4,10 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "prometheus-client>=0.21.1",
+    "python-dotenv>=1.1.0",
+]
 
 [build-system]
 requires = ["setuptools", "wheel"]
@@ -137,5 +140,10 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "Protocol", # Don't require coverage for Protocol definitions
     "@abstractmethod",
+]
+
+[dependency-groups]
+dev = [
+    "python-dotenv>=1.1.0",
 ]
 # --- COVERAGE ---
