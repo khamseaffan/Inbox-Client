@@ -6,7 +6,6 @@ from datetime import datetime
 # Import the protocol
 import message
 
-
 class GmailMessage(message.Message):
     """Concrete implementation of the Message protocol for Gmail."""
 
@@ -104,10 +103,16 @@ class GmailMessage(message.Message):
                     try:
                         # Decode payload, handling potential encoding issues
                         payload = part.get_payload(decode=True)
-                        charset = part.get_content_charset() or "utf-8"
-                        body_content = payload.decode(charset, errors="replace")
-                        # Found the plain text body, no need to look further
-                        break
+                        if isinstance(payload, bytes):
+                            charset = part.get_content_charset() or "utf-8"
+                            body_content = payload.decode(charset, errors="replace")
+                            # Found the plain text body, no need to look further
+                            break
+                        else:
+                            # Handle non-bytes payload if necessary, maybe it's already text?
+                            # Or log a warning/error
+                            body_content = "[Non-bytes payload found in text/plain part]"
+                            break
                     except Exception as e:
                         print(f"Error decoding part for message {self.id}: {e}")
                         body_content = "[Could not decode body part]"
@@ -119,11 +124,14 @@ class GmailMessage(message.Message):
             # If it's not multipart, get the main payload
             try:
                 payload = self._parsed.get_payload(decode=True)
-                charset = self._parsed.get_content_charset() or "utf-8"
-                body_content = payload.decode(charset, errors="replace")
+                if isinstance(payload, bytes):
+                    charset = self._parsed.get_content_charset() or "utf-8"
+                    body_content = payload.decode(charset, errors="replace")
+                else:
+                    # Handle non-bytes payload
+                    body_content = "[Non-bytes payload found]"
             except Exception as e:
                 print(f"Error decoding payload for message {self.id}: {e}")
                 body_content = "[Could not decode body]"
 
         return body_content
-

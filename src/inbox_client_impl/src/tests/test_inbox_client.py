@@ -1,13 +1,13 @@
 import inbox_client_protocol
 import inbox_client_impl
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 # We need to patch 'GmailClient' where it's looked up by the code under test.
 # The factory get_client_impl is in inbox_client_impl.__init__ and calls GmailClient()
 # after importing it from ._impl. Let's patch the name 'GmailClient' as it exists
 # within the 'inbox_client_impl' (specifically its __init__) module's namespace.
-@patch("inbox_client_impl.GmailClient") # <--- MODIFIED PATCH TARGET
-def test_inbox_client_creation(mock_gmail_client_class):
+@patch("inbox_client_impl.GmailClient")
+def test_inbox_client_creation(mock_gmail_client_class: MagicMock) -> None:
     """
     Test the creation of an inbox client using the factory function,
     mocking the actual GmailClient instantiation to avoid credential errors.
