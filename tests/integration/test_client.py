@@ -9,6 +9,7 @@ import inbox_client_impl
 import message_impl
 "Unit Tests for Client Protocol"
 
+@pytest.mark.integration
 def test_get_messages() -> None:
     """Test get_messages method returns an iterator of Message objects."""
     client = inbox_client_protocol.get_client()
@@ -19,7 +20,7 @@ def test_get_messages() -> None:
     msg_id = msg.id
     assert isinstance(msg_id, str)
 
-
+@pytest.mark.integration
 def test_send_message() -> None:
     """Test send_message method returns True for valid parameters."""
     client = inbox_client_protocol.get_client()
@@ -27,6 +28,7 @@ def test_send_message() -> None:
     # Assert that send_message returns True as expected
     assert result is True
 
+@pytest.mark.integration
 def test_delete_message(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test delete_message method returns True when a valid message ID is provided."""
     client = inbox_client_protocol.get_client()
@@ -39,6 +41,7 @@ def test_delete_message(monkeypatch: pytest.MonkeyPatch) -> None:
     result = client.delete_message(msg.id)
     assert result is True
 
+@pytest.mark.integration
 def test_mark_as_read() -> None:
     """Test mark_as_read method returns True when a valid message ID is provided."""
     client = inbox_client_protocol.get_client()
