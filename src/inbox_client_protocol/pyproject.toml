@@ -1,5 +1,5 @@
 [project]
-name = "inbox_client"
+name = "inbox_client_protocol"
 version = "0.1.0"
 description = "Inbox Client Protocol"
 readme = "README.md"

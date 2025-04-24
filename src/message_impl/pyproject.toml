@@ -4,9 +4,13 @@ version = "0.1.0"
 description = "Message Implementation for Inbox Client"
 readme = "README.md"
 requires-python = ">=3.11"
+dependencies = [
+    "message",
+]
   
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.uv.sources]
+message = { workspace = true }

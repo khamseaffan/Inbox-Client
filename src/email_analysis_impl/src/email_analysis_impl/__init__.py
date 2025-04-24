@@ -2,6 +2,7 @@ import re
 import time
 import logging
 from prometheus_client import Counter, Histogram
+from email_analysis import Analyzer
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,7 +33,7 @@ email_analysis_duration_seconds = Histogram(
     "email_analysis_duration_seconds", "Time spent analyzing each email"
 )
 
-class LLMAnalyzer:
+class LLMAnalyzer(Analyzer):
     """
     A mock email analyzer that detects spam and importance using simple keyword rules.
     """
@@ -49,8 +50,8 @@ class LLMAnalyzer:
 
         Returns:
             dict: {
-                "is_spam": bool,
-                "importance": "high" or "normal" or "low"
+                "spam": is_spam,
+                "importance": importance
             }
         """
         start_time = time.time()

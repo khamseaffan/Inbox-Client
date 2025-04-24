@@ -84,7 +84,7 @@ ignore = [
 members = [
     "src/email_analysis",
     "src/email_analysis_impl",
-    "src/inbox_client",
+    "src/inbox_client_protocol",
     "src/inbox_client_impl",
     "src/message",
     "src/message_impl"
@@ -95,20 +95,12 @@ members = [
 
 # --- PYTEST ---
 [tool.pytest.ini_options]
-pythonpath = [
-    "src/email_analysis",
-    "src/email_analysis_impl",
-    "src/inbox_client",
-    "src/inbox_client_impl",
-    "src/message",
-    "src/message_impl",
-    "src",
-    "."]
+pythonpath = ["src"]
 testpaths = ["tests", "src"] # Include src/*/*/tests directories
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
-addopts = "-v --tb=short --cov=src --cov-report=term-missing"
+# addopts = "-v --tb=short --cov=src --cov-report=term-missing"
 # --- PYTEST ---
 
 
@@ -120,7 +112,7 @@ explicit_package_bases = true
 mypy_path = [
     "src/email_analysis",
     "src/email_analysis_impl",
-    "src/inbox_client",
+    "src/inbox_client_protocol",
     "src/inbox_client_impl",
     "src/message",
     "src/message_impl",

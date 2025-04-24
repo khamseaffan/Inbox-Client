@@ -2,7 +2,7 @@ import base64
 import email
 from email.message import Message as EmailMessage
 from datetime import datetime
-import message  
+from message import Message
 
 '''
 Better way to do it is ; Use .get() with fallback
@@ -13,7 +13,7 @@ return self._parsed.get("From", "")
 
 '''
 
-class GmailMessage(message.Message):
+class GmailMessage(Message):
     def __init__(self, msg_id: str, raw_data: str):
         self._id = msg_id
         self._raw_data = raw_data

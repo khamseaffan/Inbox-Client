@@ -4,6 +4,10 @@ version = "0.1.0"
 description = "Email Analyzer Implementation"
 readme = "README.md"
 requires-python = ">=3.11"
+dependencies = [
+    "email-analysis",
+    "prometheus-client>=0.21.1",
+]
 
   
 [build-system]
@@ -12,3 +16,7 @@ build-backend = "hatchling.build"
 
 [tool.uv.sources]
 message = { workspace = true }
+email-analysis = { workspace = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/email_analysis_impl"]
