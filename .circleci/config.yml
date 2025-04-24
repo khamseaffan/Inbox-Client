@@ -171,15 +171,10 @@ workflows:
           requires:
             - build
 
-      # Integration tests run after unit tests and ONLY on the main branch
       - integration_test:
           requires:
             - unit_test # Run after unit tests pass
           context: inboxclient
-          filters:
-            branches:
-              only:
-                - main
                 
       # Optional: Report summary after tests
       - report_summary:
