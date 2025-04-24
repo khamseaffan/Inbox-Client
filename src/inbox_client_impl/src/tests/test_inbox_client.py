@@ -1,6 +1,32 @@
 import inbox_client_protocol
 import inbox_client_impl
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, ANY
+from inbox_client_impl._impl import GmailClient
+from collections.abc import Iterator
+import pytest
+
+@pytest.fixture
+def mock_google_service() -> MagicMock:
+    """Provides a mock Google API service resource object."""
+    mock_service = MagicMock(name="Google Service Resource")
+    # Mock the chained calls structure used in the methods
+    mock_users = mock_service.users.return_value
+    mock_messages = mock_users.messages.return_value
+    # Configure default return values for execute() on different calls
+    mock_messages.list.return_value.execute.return_value = {"messages": []} # Default: no messages
+    mock_messages.get.return_value.execute.return_value = {"raw": ""} # Default: empty raw data
+    mock_messages.send.return_value.execute.return_value = {"id": "sent_id_123"} # Default: success
+    mock_messages.delete.return_value.execute.return_value = {} # Default: success (no return needed)
+    mock_messages.modify.return_value.execute.return_value = {} # Default: success
+    return mock_service
+
+@pytest.fixture
+def gmail_client(mock_google_service: MagicMock) -> GmailClient:
+    """Provides a GmailClient instance initialized with a mocked service."""
+    # Instantiate the client directly, bypassing the complex __init__ auth logic
+    client = GmailClient(service=mock_google_service)
+    return client
+
 
 @patch("inbox_client_impl.GmailClient")
 def test_inbox_client_creation(mock_gmail_client_class: MagicMock) -> None:
@@ -19,3 +45,35 @@ def test_inbox_client_creation(mock_gmail_client_class: MagicMock) -> None:
 
     # Optional: Assert that the returned client is the instance created by the mock
     assert client == mock_gmail_client_class.return_value
+
+@patch("inbox_client_impl._impl.build")
+@patch("inbox_client_impl._impl.Request")
+@patch("inbox_client_impl._impl.Credentials")
+@patch("os.environ.get")
+def test_init_with_env_vars(mock_getenv, mock_creds_class, mock_request, mock_build):
+    """Test __init__ authentication using environment variables."""
+    # Configure mocks
+    mock_getenv.side_effect = lambda key, default=None: {
+        "GMAIL_CLIENT_ID": "env_client_id",
+        "GMAIL_CLIENT_SECRET": "env_client_secret",
+        "GMAIL_REFRESH_TOKEN": "env_refresh_token",
+        "GMAIL_TOKEN_URI": "env_token_uri"
+    }.get(key, default)
+    mock_creds_instance = mock_creds_class.return_value
+    mock_build.return_value = MagicMock(name="Mock Service from Build")
+
+    # Instantiate - this should trigger the env var logic
+    client = GmailClient(service=None)
+
+    # Assertions
+    mock_creds_class.assert_called_once_with(
+        None,
+        refresh_token="env_refresh_token",
+        token_uri="env_token_uri",
+        client_id="env_client_id",
+        client_secret="env_client_secret",
+        scopes=GmailClient.SCOPES
+    )
+    mock_creds_instance.refresh.assert_called_once()
+    mock_build.assert_called_once_with("gmail", "v1", credentials=mock_creds_instance)
+    assert client.service == mock_build.return_value

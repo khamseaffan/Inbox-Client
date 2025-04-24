@@ -70,21 +70,29 @@ class GmailMessage(message.Message):
 
     @property
     def subject(self) -> str:
-        """Returns the message subject, or empty string if not found."""
-        # Decode header potentially containing encoded words (RFC 2047)
+        """Returns the message subject, decoding if necessary."""
         subject_header = self._parsed.get("Subject", "")
         if not subject_header:
             return ""
-        decoded_parts = email.header.decode_header(subject_header)
-        subject_str = ""
-        for part, encoding in decoded_parts:
-            if isinstance(part, bytes):
-                # If it's bytes, decode using the specified encoding or default
-                subject_str += part.decode(encoding or "utf-8", errors="replace")
-            else:
-                # If it's already a string, just append
-                subject_str += part
-        return subject_str
+
+        # Attempt to decode RFC 2047 encoded words
+        try:
+            # Check if it looks like an encoded header to avoid unnecessary processing
+            if "=?" not in subject_header:
+                 return subject_header # Return plain string directly
+
+            decoded_parts = email.header.decode_header(subject_header)
+            subject_str = ""
+            for part, encoding in decoded_parts:
+                if isinstance(part, bytes):
+                    subject_str += part.decode(encoding or "utf-8", errors="replace")
+                else:
+                    subject_str += part # Append decoded string part
+
+            return subject_str if subject_str else subject_header
+        except Exception:
+            # Fallback to the raw header if any decoding error occurs
+            return subject_header
 
     @property
     def body(self) -> str:

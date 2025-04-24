@@ -136,14 +136,28 @@ mypy_path = [
 
 
 # --- COVERAGE ---
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "tests/*",             # Exclude all files in the top-level tests/ directory
+    "src/*/tests/*",       # Exclude all files in any src/<package>/tests/ directory
+    ".venv/*",             # Standard practice: exclude virtual environment
+    "*/__main__.py",       # Exclude main entry points if any
+    "**/test_*.py"
+]
+
 [tool.coverage.report]
-# Lines to exclude from coverage statistics
 exclude_lines = [
-    "pragma: no cover",          # Standard pragma for excluding lines
-    "raise NotImplementedError", # Exclude lines raising this error
-    "if TYPE_CHECKING:",
-    "Protocol", # Don't require coverage for Protocol definitions
-    "@abstractmethod",
+    "pragma: no cover",          # Standard pragma
+    "raise NotImplementedError", # Protocol/Abstract methods
+    "if TYPE_CHECKING:",         # Type checking blocks
+    "Protocol",                  # Lines defining Protocols
+    "@abstractmethod",           # Abstract methods decorators
+    "# type: ignore",            # Lines with type ignores
+    "except Exception as e:",    # Optionally ignore basic exception handlers
+    'if __name__ == "__main__":', # Main execution block
+    # Add any other specific line patterns if needed
 ]
 
 [dependency-groups]

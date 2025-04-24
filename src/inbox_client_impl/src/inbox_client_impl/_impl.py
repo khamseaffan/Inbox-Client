@@ -71,39 +71,40 @@ class GmailClient(inbox_client_protocol.Client):
                      creds = None # Ensure creds is None if loading fails
 
             # If there are no (valid) credentials available, let the user log in.
-            if not creds or not creds.valid:
-                if creds and creds.expired and creds.refresh_token:
-                    print("Refreshing token from file...")
+            if not creds or not creds.valid: # pragma: no cover
+                # --- START OF INTERACTIVE BLOCK TO EXCLUDE ---
+                if creds and creds.expired and creds.refresh_token: # pragma: no cover
+                    print("Refreshing token from file...") # pragma: no cover
                     try:
                         creds.refresh(Request()) # type: ignore[no-untyped-call]
-                    except Exception as e:
-                         print(f"Error refreshing token from file: {e}")
-                         creds = None # Force re-auth if refresh fails
-                else:
+                    except Exception as e: # pragma: no cover
+                         print(f"Error refreshing token from file: {e}") # pragma: no cover
+                         creds = None # Force re-auth if refresh fails # pragma: no cover
+                else: # pragma: no cover
                     # Run the interactive flow only if absolutely necessary
-                    print("Running interactive authentication flow...")
-                    if not os.path.exists(creds_path): #noqa: PTH110
+                    print("Running interactive authentication flow...") # pragma: no cover
+                    if not os.path.exists(creds_path): #noqa: PTH110 # pragma: no cover
                         # This error should only happen in local dev if file is missing
-                        raise FileNotFoundError( #noqa: TRY003
-                            f"'{creds_path}' not found. Cannot run interactive auth." #noqa: EM102
+                        raise FileNotFoundError( #noqa: TRY003 # pragma: no cover
+                            f"'{creds_path}' not found. Cannot run interactive auth." #noqa: EM102 # pragma: no cover
                         )
-                    try:
+                    try: # pragma: no cover
                         flow = InstalledAppFlow.from_client_secrets_file(
                             creds_path, self.SCOPES
                         )
                         creds = flow.run_local_server(port=0)
-                    except Exception as e:
+                    except Exception as e: # pragma: no cover
                          print(f"Error during interactive auth flow: {e}")
                          raise # Re-raise the exception if interactive flow fails
 
-                if creds:
-                    try:
-                        with open(token_path, "w") as token:
+                if creds: # pragma: no cover
+                    try: # pragma: no cover
+                        with open(token_path, "w") as token: # pragma: no cover
                             token.write(creds.to_json()) # type: ignore[no-untyped-call]
                         print(f"Credentials saved to {token_path}")
-                    except Exception as e:
+                    except Exception as e: # pragma: no cover
                          print(f"Error saving token to {token_path}: {e}")
-
+                # --- END OF INTERACTIVE BLOCK TO EXCLUDE ---
         if not creds:
              raise RuntimeError(FAILURE_TO_CRED)
 

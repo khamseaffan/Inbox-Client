@@ -130,9 +130,7 @@ jobs:
           command: |
             echo "--- Unit Test Summary ---"
             if [ -f test-results/unit/junit.xml ]; then
-              # Simple grep might be fragile, consider a dedicated parser if needed
               echo "Unit test results file found."
-              # Add more sophisticated parsing here if desired
             else
               echo "Unit test results file (test-results/unit/junit.xml) not found."
             fi
