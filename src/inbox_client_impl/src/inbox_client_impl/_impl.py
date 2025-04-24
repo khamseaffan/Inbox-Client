@@ -51,6 +51,7 @@ class GmailClient(inbox_client_protocol.Client):
             except Exception as e:
                 print(f"Error refreshing token from environment variables: {e}")
                 creds = None # Ensure creds is None if refresh fails
+                raise
 
         # Fallback to file-based auth if env vars failed or aren't present
         if not creds:
