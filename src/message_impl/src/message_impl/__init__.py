@@ -9,7 +9,7 @@ from ._impl import GmailMessage
 
 def get_message_impl(msg_id: str, raw_data: str) -> message.Message:
     """
-    Factory function returning an instance of the concrete GmailMessage.
+    Return instance of the concrete GmailMessage.
 
     Args:
         msg_id: The unique identifier for the message.

@@ -9,9 +9,9 @@ import message
 class GmailMessage(message.Message):
     """Concrete implementation of the Message protocol for Gmail."""
 
-    def __init__(self, msg_id: str, raw_data: str):
+    def __init__(self, msg_id: str, raw_data: str) -> None:
         """
-        Initializes a GmailMessage instance.
+        Initialize GmailMessage instance.
 
         Args:
             msg_id: The unique ID of the Gmail message.
@@ -53,10 +53,7 @@ class GmailMessage(message.Message):
 
     @property
     def date(self) -> str:
-        """
-        Returns the message date formatted as MM/DD/YYYY,
-        or the raw date string if parsing fails.
-        """
+        """Returns the message date formatted as MM/DD/YYYY, or the raw date string if parsing fails.""" # noqa: E501
         raw_date = self._parsed.get("Date", "")
         if not raw_date:
             return "Unknown Date"
@@ -89,10 +86,7 @@ class GmailMessage(message.Message):
 
     @property
     def body(self) -> str:
-        """
-        Extracts and returns the plain text body of the message.
-        Walks through multipart messages to find the text/plain part.
-        """
+        """Extracts and returns the plain text body of the message."""
         body_content = ""
         if self._parsed.is_multipart():
             for part in self._parsed.walk():
@@ -100,7 +94,7 @@ class GmailMessage(message.Message):
                 content_disposition = part.get("Content-Disposition", "")
 
                 # Look for plain text parts that are not attachments
-                if content_type == "text/plain" and "attachment" not in content_disposition:
+                if content_type == "text/plain" and "attachment" not in content_disposition: # noqa: E501
                     try:
                         # Decode payload, handling potential encoding issues
                         payload = part.get_payload(decode=True)
@@ -109,8 +103,6 @@ class GmailMessage(message.Message):
                             body_content = payload.decode(charset, errors="replace")
                             # Found the plain text body, no need to look further
                             break
-                        # Handle non-bytes payload if necessary, maybe it's already text?
-                        # Or log a warning/error
                         body_content = "[Non-bytes payload found in text/plain part]"
                         break
                     except Exception as e:

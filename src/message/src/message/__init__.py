@@ -105,7 +105,7 @@ class Message(Protocol):
 # Modified signature to accept parameters needed by the implementation
 def get_message(msg_id: str, raw_data: str) -> Message:
     """
-    Factory function to return an instance of a Message.
+    Return an instance of a Message.
 
     Args:
         msg_id: The unique identifier for the message.

@@ -6,9 +6,10 @@ from collections.abc import Iterator
 from message import Message
 
 class Client(Protocol):
+    """Define base class for interacting with an inbox client."""
 
     def get_messages(self) -> Iterator[Message]:
-        # ... (existing docstring and raise) ...
+        """Retrieve messages from the inbox."""
         raise NotImplementedError
 
     def send_message(self, to: str, subject: str, body: str) -> bool:

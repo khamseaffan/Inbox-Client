@@ -8,10 +8,7 @@ from unittest.mock import patch, MagicMock
 # within the 'inbox_client_impl' (specifically its __init__) module's namespace.
 @patch("inbox_client_impl.GmailClient")
 def test_inbox_client_creation(mock_gmail_client_class: MagicMock) -> None:
-    """
-    Test the creation of an inbox client using the factory function,
-    mocking the actual GmailClient instantiation to avoid credential errors.
-    """
+    """Test the creation of an inbox client using the factory function."""
     mock_instance = mock_gmail_client_class.return_value
     mock_instance.some_method.return_value = "mocked result"
 

@@ -13,12 +13,12 @@ def test_get_messages() -> None:
     """Test get_messages method returns an iterator of Message objects."""
     client = inbox_client_protocol.get_client()
     messages = client.get_messages()
-    # Check that result is an iterator by verifying the presence of __iter__ and __next__
-    assert hasattr(messages, '__iter__') and hasattr(messages, '__next__')
+    assert hasattr(messages, "__iter__")
+    assert hasattr(messages, "__next__")
     msg = next(messages)
-    id = msg.id
-    assert isinstance(id, str)
-    
+    msg_id = msg.id
+    assert isinstance(msg_id, str)
+
 
 def test_send_message() -> None:
     """Test send_message method returns True for valid parameters."""
@@ -40,7 +40,7 @@ def test_mark_as_read() -> None:
     """Test mark_as_read method returns True when a valid message ID is provided."""
     client = inbox_client_protocol.get_client()
     messages = client.get_messages()
-    msg = next(messages)    
+    msg = next(messages)
     result = client.mark_as_read(msg.id)
     # Assert that mark_as_read returns True as expected
     assert result is True

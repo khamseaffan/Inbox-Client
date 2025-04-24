@@ -32,7 +32,5 @@ def test_get_client_factory() -> None:
     except FileNotFoundError:
         # If testing locally without credentials, this might be expected
         # In CI, this test should ideally be mocked or skipped
-        pytest.skip("Skipping client factory test: credentials.json not found or test not mocked.")
-    except Exception as e:
-        pytest.fail(f"Client factory raised unexpected exception: {e}")
+        pytest.skip("Credentials.json not found or test not mocked.")
 

@@ -8,7 +8,7 @@ from ._impl import GmailClient
 
 
 def get_client_impl() -> inbox_client_protocol.Client:
-    """Factory function returning an instance of the concrete GmailClient."""
+    """Return an instance of the concrete GmailClient."""
     return GmailClient(service=None)
 
 

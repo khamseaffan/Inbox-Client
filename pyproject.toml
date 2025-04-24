@@ -80,6 +80,10 @@ ignore = [
     "PGH003", # Use specific rule codes when ignoring type issues
     "I001", # Import block is un-sorted or un-formatted
     "N806", # We use camelCase
+    "BLE001", # Blind exceptions are needed when working with google api
+    "TRY300", # Else blocks not applicable in api 
+    "PTH123", # Open is safe in our case
+    "G004", # f-strings are used in main.py only and are fine there
 ]
 
 
