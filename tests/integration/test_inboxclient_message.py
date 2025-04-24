@@ -12,7 +12,7 @@ def test_get_message_factory() -> None:
     # Use dummy data for this basic check
     dummy_id = "test_id_123"
     # Need valid base64 data for a minimal email structure
-    dummy_raw_data = base64.urlsafe_b64encode(b"Subject: Test\n\nBody").decode('utf-8')
+    dummy_raw_data = base64.urlsafe_b64encode(b"Subject: Test\n\nBody").decode("utf-8")
     msg = message.get_message(msg_id=dummy_id, raw_data=dummy_raw_data)
     assert msg is not None
     assert msg.id == dummy_id

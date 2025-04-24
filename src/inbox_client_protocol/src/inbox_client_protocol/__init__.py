@@ -25,6 +25,7 @@ class Client(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -40,6 +41,7 @@ class Client(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -55,6 +57,7 @@ class Client(Protocol):
 
         Raises:
             NotImplementedError: If the method is not implemented.
+
         """
         raise NotImplementedError
 
@@ -67,5 +70,6 @@ def get_client() -> Client:
 
     Raises:
         NotImplementedError: If the method is not implemented.
+
     """
     raise NotImplementedError

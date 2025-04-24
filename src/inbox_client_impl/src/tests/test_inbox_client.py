@@ -13,7 +13,7 @@ def test_inbox_client_creation(mock_gmail_client_class: MagicMock) -> None:
     mocking the actual GmailClient instantiation to avoid credential errors.
     """
     mock_instance = mock_gmail_client_class.return_value
-    mock_instance.some_method.return_value = 'mocked result'
+    mock_instance.some_method.return_value = "mocked result"
 
     # Call the factory function. This will now call the mocked GmailClient()
     client = inbox_client_protocol.get_client()

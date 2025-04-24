@@ -1,5 +1,6 @@
 
-from typing import ClassVar, Iterator, Optional
+from typing import ClassVar, Optional
+from collections.abc import Iterator
 from googleapiclient.discovery import build, Resource # type: ignore[import-untyped]
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow # type: ignore[import-untyped]
@@ -20,7 +21,7 @@ class GmailClient(inbox_client_protocol.Client):
         "https://www.googleapis.com/auth/gmail.modify"
     ]
 
-    def __init__(self, service: Optional[Resource] = None):
+    def __init__(self, service: Resource | None = None):
         if service:
             self.service = service
         else:
@@ -44,24 +45,24 @@ class GmailClient(inbox_client_protocol.Client):
                             f"'{creds_path}' not found. Please download client secrets."
                         )
                     # Ignoring the call if the import ignore wasn't sufficient
-                    flow = InstalledAppFlow.from_client_secrets_file( 
+                    flow = InstalledAppFlow.from_client_secrets_file(
                         creds_path, self.SCOPES
                     )
                     # Ignoring the call if the import ignore wasn't sufficient
-                    creds = flow.run_local_server(port=0) 
+                    creds = flow.run_local_server(port=0)
                 with open(token_path, "w") as token:
                     token.write(creds.to_json())
             # Ignoring the call if the import ignore wasn't sufficient
-            self.service = build("gmail", "v1", credentials=creds) 
+            self.service = build("gmail", "v1", credentials=creds)
 
 
     def get_messages(self) -> Iterator[message.Message]:
         """Fetches messages from Gmail and yields Message instances via factory."""
         results = (
-            self.service.users() 
-            .messages() 
-            .list(userId="me", maxResults=10) 
-            .execute() 
+            self.service.users()
+            .messages()
+            .list(userId="me", maxResults=10)
+            .execute()
         )
         messages_summary = results.get("messages", [])
 
@@ -94,7 +95,7 @@ class GmailClient(inbox_client_protocol.Client):
 
             send_result = (
                 self.service.users()
-                .messages() 
+                .messages()
                 .send(userId="me", body=create_message)
                 .execute()
             )
@@ -108,10 +109,10 @@ class GmailClient(inbox_client_protocol.Client):
         """Deletes a message from Gmail using its ID."""
         try:
             (
-                self.service.users() 
-                .messages() 
+                self.service.users()
+                .messages()
                 .delete(userId="me", id=message_id)
-                .execute() 
+                .execute()
             )
             return True
         except Exception as e:
@@ -124,12 +125,12 @@ class GmailClient(inbox_client_protocol.Client):
             # Request body to remove the UNREAD label
             modify_request = {"removeLabelIds": ["UNREAD"]}
             (
-                self.service.users() 
+                self.service.users()
                 .messages()
-                .modify( 
+                .modify(
                     userId="me", id=message_id, body=modify_request
                 )
-                .execute() 
+                .execute()
             )
             return True
         except Exception as e:

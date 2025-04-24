@@ -16,6 +16,7 @@ class GmailMessage(message.Message):
         Args:
             msg_id: The unique ID of the Gmail message.
             raw_data: The raw, base64url encoded email data.
+
         """
         self._id = msg_id
         self._raw_data = raw_data
@@ -108,11 +109,10 @@ class GmailMessage(message.Message):
                             body_content = payload.decode(charset, errors="replace")
                             # Found the plain text body, no need to look further
                             break
-                        else:
-                            # Handle non-bytes payload if necessary, maybe it's already text?
-                            # Or log a warning/error
-                            body_content = "[Non-bytes payload found in text/plain part]"
-                            break
+                        # Handle non-bytes payload if necessary, maybe it's already text?
+                        # Or log a warning/error
+                        body_content = "[Non-bytes payload found in text/plain part]"
+                        break
                     except Exception as e:
                         print(f"Error decoding part for message {self.id}: {e}")
                         body_content = "[Could not decode body part]"
