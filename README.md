@@ -1,160 +1,180 @@
 # Inbox Client Workspace
 
-# Description
+## Description
 
-This repository defines a modular protocol-based interface and implementation for Gmail clients. It uses Python `Protocol` classes to describe standardized, mockable interfaces for both messages and inbox clients.
+This repository defines a modular, protocol-based interface and implementation for a Gmail client. It utilizes Python's `typing.Protocol` to describe standardized, mockable interfaces for both email messages and the inbox client itself, promoting separation of concerns and testability.
+
+The project follows a workspace structure managed by `uv`, with distinct packages for protocols and their concrete implementations.
 
 ### Scope
 
-This inbox client is designed to read and parse messages from Gmail, with the capability to perform basic analysis (e.g., sorting by priority and detecting phishing). The **minimum viable product (MVP)** for this client will include the ability to read and return messages from a Gmail account.
+This inbox client is designed primarily to read, parse, and interact with messages from a Gmail account.
 
-#### Implemented Features:
+#### Implemented Features
 
-- Reading and returning messages from Gmail.
-- Fetching a message by ID.
-- Sending a message to a specified recipient.
+- Reading messages from a Gmail inbox.
+- Sending a message via Gmail.
 - Deleting a message by its unique identifier.
 - Marking a message as read.
-- Basic parsing and analysis of messages (e.g., priority sorting, phishing detection).
+- Basic parsing of message headers and body content.
+- Authentication via OAuth 2.0 (using local files or environment variables for CI).
 
-#### Out of Scope:
+#### Out of Scope
 
-- Parsing messages from non-Gmail services (e.g., Hotmail, LinkedIn).
-- Advanced inbox search functionality.
-- Handling of attachments within messages.
-- Spam detection and filtering.
+- Support for non-Gmail services (e.g., Outlook, Yahoo Mail).
+- Advanced inbox search/filtering capabilities beyond basic listing.
+- Handling of complex attachments (downloading, parsing).
+- Advanced spam detection or automatic categorization.
 - Real-time message streaming or push notifications.
-- Integration with email clients other than Gmail.
 
-### API Methods
+### Core Components
 
-The API defines the following methods for interacting with the inbox client:
+- **`message`**: Defines the `Message` protocol (interface) for an email message.
+- **`message_impl`**: Provides `GmailMessage`, a concrete implementation of the `Message` protocol using Python's `email` library.
+- **`inbox_client_protocol`**: Defines the `Client` protocol (interface) for interacting with an inbox.
+- **`inbox_client_impl`**: Provides `GmailClient`, a concrete implementation of the `Client` protocol using the Google Gmail API.
 
-| Method                                           | Parameters                                  | Return Type         | Description                                 |
-| ------------------------------------------------ | ------------------------------------------- | ------------------- | ------------------------------------------- |
-| `get_messages()`                                 | None                                        | `Iterator[Message]` | Fetches all messages from the inbox.        |
-| `send_message(to: str, subject: str, body: str)` | Recipient email, subject line, message body | `bool`              | Sends a message to the specified recipient. |
-| `delete_message(message_id: str)`                | Unique message ID                           | `bool`              | Deletes the specified message.              |
-| `mark_as_read(message_id: str)`                  | Unique message ID                           | `bool`              | Marks the specified message as read.        |
-
-### Usage
-
-#### Reading Messages
+## API Usage Example
 
 ```python
-from src.inbox_client_api import get_client
+import logging
+import os
+from dotenv import load_dotenv
 
-client = get_client()
-messages = client.get_messages()
-for message in messages:
-    print(f"From: {message.from_} - Subject: {message.subject}")
+# Load .env file for local development (contains GMAIL_* variables)
+load_dotenv()
+
+# Import the protocol's factory function
+# The implementation package overrides this during import
+import inbox_client_protocol
+from message import Message # Import Message protocol for type hinting
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logger = logging.getLogger(__name__)
+
+try:
+    # Get the client instance (will be GmailClient due to override)
+    client: inbox_client_protocol.Client = inbox_client_protocol.get_client()
+    logger.info("Client initialized.")
+
+    # Get messages
+    logger.info("Fetching messages...")
+    messages: Iterator[Message] = client.get_messages()
+    first_message = next(messages, None) # Get the first message if available
+
+    if first_message:
+        logger.info(f"First message - ID: {first_message.id}, Subject: {first_message.subject}")
+
+        # Mark as read
+        # logger.info(f"Marking message {first_message.id} as read...")
+        # success = client.mark_as_read(first_message.id)
+        # logger.info(f"Mark as read status: {success}")
+
+        # Delete (Use with caution!)
+        # logger.info(f"Deleting message {first_message.id}...")
+        # success = client.delete_message(first_message.id)
+        # logger.info(f"Delete status: {success}")
+
+    else:
+        logger.info("No messages found in the inbox.")
+
+    # Send a message (Use with caution!)
+    # logger.info("Sending test message...")
+    # sent = client.send_message("your_email@example.com", "Test from Client", "Hello there!")
+    # logger.info(f"Send status: {sent}")
+
+except (FileNotFoundError, RuntimeError, Exception) as e:
+    logger.error(f"An error occurred: {e}", exc_info=True)
 ```
 
-#### Sending a Message
+## Requirements
 
-```python
-result = client.send_message("recipient@example.com", "Hello", "This is a test message.")
-if result:
-    print("Message sent successfully.")
-else:
-    print("Failed to send message.")
-```
+- Python 3.11 or higher  
+- `uv` (for dependency and workspace management)  
+- Google Cloud Project with Gmail API enabled  
+- `credentials.json` downloaded from Google Cloud Console (for initial local auth)  
+- See individual component `pyproject.toml` files for specific dependencies.
 
-#### Deleting a Message
+## Setup Instructions
 
-```python
-delete_result = client.delete_message("12345")
-if delete_result:
-    print("Message deleted.")
-else:
-    print("Failed to delete message.")
-```
-
-#### Marking a Message as Read
-
-```python
-mark_result = client.mark_as_read("12345")
-if mark_result:
-    print("Message marked as read.")
-else:
-    print("Failed to mark as read.")
-```
-
-### Requirements
-
-- Python 3.10 or higher
-- `pytest` for testing
-- `mypy` for type checking
-- `ruff` for linting
-- `uv` (for dependency and workspace management)
-- `coverage`
-
-### Setup Instructions
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/khamseaffan/Inbox-Client.git
-   cd Inbox-Client
-   ```
-
-2. Install UV, the package manager for dependency management:
-
-   - For macOS/Linux:
-     ```bash
-     curl -LsSf https://astral.sh/uv/install.sh | sh
-     ```
-   - For Windows:
-     ```bash
-     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-     ```
-
-3. Install the project dependencies:
-   ```bash
-   uv sync
-   uv sync --all-packages --extra dev --extra test
-   ```
-
-### Testing
-
-To run all of the test suite at once:
+### Clone
 
 ```bash
+git clone https://github.com/khamseaffan/Inbox-Client.git # Replace with your repo URL
+cd Inbox-Client
+```
+
+### Install UV
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh # macOS/Linux
+# Or use PowerShell command for Windows
+```
+
+### Setup Google Credentials
+
+1. Follow Google Cloud instructions to enable the Gmail API and download `credentials.json`.
+2. Place `credentials.json` in the project root (`Inbox-Client/`).
+3. Run the application once locally (e.g., `uvx python main.py`) to perform the initial OAuth flow and generate `token.json`.
+4. Add `credentials.json` and `token.json` to your `.gitignore` file.
+5. For easier local development, create a `.env` file (also add to `.gitignore`) and store the `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, and `GMAIL_REFRESH_TOKEN` values (see `main.py` and `inbox_client_impl` for usage).
+
+### Install Dependencies
+
+```bash
+# Installs all workspace members and dependencies defined in uv.lock
+uv sync --all-packages --extra dev --extra test
+```
+
+## Testing
+
+### Run all tests (Unit + Integration)
+
+```bash
+# Activate venv first: source .venv/bin/activate
 pytest .
+# Or use uvx:
+uvx pytest .
 ```
 
-To run individual test files:
+### Run only unit tests
 
 ```bash
-pytest <path-to-specific-test-file>
+uvx pytest . -m "not integration"
 ```
 
-To run individual tests within a file:
+### Run only integration tests (requires local .env or CI context)
 
 ```bash
-pytest <path-to-specific-test-file::name-of-individual-test>
+uvx pytest . -m integration
 ```
 
-### Contributions
+### Run with coverage (unit tests only)
 
-We welcome any and all contributions and will be using GitHub to track bugs, feature requests, and pull requests.  
-By contributing, you agree that your contributions will be licensed under the project's license.
+```bash
+uvx pytest . -m "not integration" --cov=src --cov-report=term-missing
+```
 
-#### Bug Reports and Feature Requests
+## Linting & Formatting
 
-Use the provided templates to report any bugs and request new features. Please follow the templates accurately to help us understand and more efficiently address your issue.
+```bash
+# Check formatting
+uvx ruff format --check .
 
-#### Pull Requests
+# Check linting
+uvx ruff check .
 
-When submitting a pull request:
+# Apply fixes (use with caution)
+uvx ruff check . --fix
+uvx ruff format .
+```
 
-- Use the pull request template provided in the repository and follow its instructions.
+## Static Analysis
 
-### License
+```bash
+uvx mypy src tests
+```
 
-This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
+## Contributions
 
-### Additional Information
-
-- This project uses CircleCI for continuous integration, which automatically runs tests and checks code formatting with ruff.
-- The `.gitignore` file is configured to ignore Python-specific files and directories, such as `__pycache__` and the `venv` directory.
+Please follow the guidelines in `pull_request_template.md`. Use GitHub issues for tracking.
