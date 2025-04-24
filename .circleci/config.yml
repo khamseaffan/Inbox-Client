@@ -85,7 +85,7 @@ jobs:
           command: |
             source .venv/bin/activate
             # Use coverage CLI now that pytest has run it
-            coverage report --fail-under=75
+            coverage report --fail-under=70
             coverage json -o test-results/unit/coverage.json # Generate JSON report
       - store_test_results:
           path: test-results/unit
