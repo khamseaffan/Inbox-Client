@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
 
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project.optional-dependencies]
 test = [
     "pytest",
@@ -17,6 +21,8 @@ dev = [
     "ruff",
     "mypy",
     "hatch",
+    "pytest",
+    "mypy"
 ]
 
 
@@ -82,8 +88,6 @@ ignore = [
 # --- WORKSPACE ---
 [tool.uv.workspace]
 members = [
-    "src/email_analysis",
-    "src/email_analysis_impl",
     "src/inbox_client_protocol",
     "src/inbox_client_impl",
     "src/message",
@@ -95,12 +99,16 @@ members = [
 
 # --- PYTEST ---
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = [
+    ".",
+    "src",
+    "tests/integration/",
+    "tests/e2e"
+    ]
 testpaths = ["tests", "src"] # Include src/*/*/tests directories
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
-# addopts = "-v --tb=short --cov=src --cov-report=term-missing"
 # --- PYTEST ---
 
 
@@ -110,12 +118,10 @@ python_functions = "test_*"
 strict = true
 explicit_package_bases = true
 mypy_path = [
-    "src/email_analysis",
-    "src/email_analysis_impl",
-    "src/inbox_client_protocol",
-    "src/inbox_client_impl",
-    "src/message",
-    "src/message_impl",
+    "src/inbox_client_protocol/src",
+    "src/inbox_client_impl/src",
+    "src/message/src",
+    "src/message_impl/src",
 ]
 # --- MYPY ---
 

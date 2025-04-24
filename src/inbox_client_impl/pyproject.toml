@@ -5,6 +5,9 @@ description = "Gmail Inbox Client Implementation"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "google-api-python-client>=2.167.0",
+    "google-auth>=2.39.0",
+    "google-auth-oauthlib>=1.2.2",
     "inbox-client-protocol",
     "message",
     "message-impl",

@@ -1,55 +1,28 @@
-import base64
-import email
-from email.message import Message as EmailMessage
-from datetime import datetime
-from message import Message
+"""Module for the GmailMessage implementation."""
 
-'''
-Better way to do it is ; Use .get() with fallback
+# Import the protocol package
+import message
 
-def from_(self) -> str:
-return self._parsed.get("From", "")
+# Import the concrete implementation class from the _impl module
+from ._impl import GmailMessage
 
 
-'''
+def get_message_impl(msg_id: str, raw_data: str) -> message.Message:
+    """
+    Factory function returning an instance of the concrete GmailMessage.
 
-class GmailMessage(Message):
-    def __init__(self, msg_id: str, raw_data: str):
-        self._id = msg_id
-        self._raw_data = raw_data
-        self._parsed: EmailMessage = email.message_from_bytes(
-            base64.urlsafe_b64decode(raw_data.encode('utf-8'))
-        )
+    Args:
+        msg_id: The unique identifier for the message.
+        raw_data: The raw data used to construct the message.
 
-    @property
-    def id(self) -> str:
-        return self._id
+    Returns:
+        message.Message: An instance of GmailMessage conforming to the protocol.
+    """
+    return GmailMessage(msg_id=msg_id, raw_data=raw_data)
 
-    @property
-    def from_(self) -> str:
-        return self._parsed["From"] or ""
 
-    @property
-    def to(self) -> str:
-        return self._parsed["To"] or ""
-
-    @property
-    def date(self) -> str:
-        raw_date = self._parsed["Date"]
-        try:
-            parsed = email.utils.parsedate_to_datetime(raw_date)
-            return parsed.strftime("%m/%d/%Y")
-        except Exception:
-            return raw_date  # fallback
-
-    @property
-    def subject(self) -> str:
-        return self._parsed["Subject"] or ""
-
-    @property
-    def body(self) -> str:
-        if self._parsed.is_multipart():
-            for part in self._parsed.walk():
-                if part.get_content_type() == "text/plain" and not part.get("Content-Disposition"):
-                    return part.get_payload(decode=True).decode(errors="replace")
-        return self._parsed.get_payload(decode=True).decode(errors="replace")
+# --- Dependency Injection ---
+# Override the get_message function in the protocol package
+# Now, anyone calling message.get_message(id, data) will get our implementation.
+message.get_message = get_message_impl
+# --- Dependency Injection ---
