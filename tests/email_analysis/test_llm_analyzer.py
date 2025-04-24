@@ -1,5 +1,5 @@
 import pytest
-from email_analysis_impl.src.email_analysis_impl._impl import LLMAnalyzer
+from email_analysis_impl import LLMAnalyzer
 
 
 def test_analyze_spam_and_importance():

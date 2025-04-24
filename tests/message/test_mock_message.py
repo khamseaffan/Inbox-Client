@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from src.message.src.message import Message
+from message import Message
 
 if TYPE_CHECKING:
     from message import Message
