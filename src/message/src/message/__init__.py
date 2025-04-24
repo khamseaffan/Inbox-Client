@@ -25,6 +25,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the property is not implemented.
+
         """
         raise NotImplementedError
 
@@ -38,6 +39,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the property is not implemented.
+
         """
         raise NotImplementedError
 
@@ -51,6 +53,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the property is not implemented.
+
         """
         raise NotImplementedError
 
@@ -65,6 +68,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the property is not implemented.
+
         """
         raise NotImplementedError
 
@@ -78,6 +82,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the property is not implemented.
+
         """
         raise NotImplementedError
 
@@ -91,6 +96,7 @@ class Message(Protocol):
 
         Raises:
             NotImplementedError: If the property is not implemented.
+
         """
         raise NotImplementedError
 
@@ -110,6 +116,7 @@ def get_message(msg_id: str, raw_data: str) -> Message:
 
     Raises:
         NotImplementedError: If the function is not overridden by an implementation.
+
     """
     raise NotImplementedError
 

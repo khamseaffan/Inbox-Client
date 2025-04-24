@@ -17,6 +17,7 @@ def get_message_impl(msg_id: str, raw_data: str) -> message.Message:
 
     Returns:
         message.Message: An instance of GmailMessage conforming to the protocol.
+
     """
     return GmailMessage(msg_id=msg_id, raw_data=raw_data)
 
