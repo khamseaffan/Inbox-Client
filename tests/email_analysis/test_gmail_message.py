@@ -1,4 +1,4 @@
-from tests.message.test_mock_message import MockGmailMessage
+from mock_message_tests.test_mock_message import MockGmailMessage
 
 mock_message = {
     "id": "123abc",

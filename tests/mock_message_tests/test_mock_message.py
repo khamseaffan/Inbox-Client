@@ -1,14 +1,35 @@
 from typing import TYPE_CHECKING
 from unittest.mock import Mock
-
+import base64
 import pytest
 
-from message import Message
+from src.message.src.message import Message
 
 if TYPE_CHECKING:
-    from message import Message
+    from src.message.src.message import Message
 
 "Unit Tests for mocked Message Protocol"
+class MockGmailMessage:
+    def __init__(self, sender, subject, body):
+        self.sender = sender
+        self.subject = subject
+        self.body = body
+
+    @classmethod
+    def from_api_dict(cls, data):
+        headers = {h["name"]: h["value"] for h in data["payload"]["headers"]}
+        sender = headers.get("From", "")
+        subject = headers.get("Subject", "")
+        raw_body = data["payload"]["body"].get("data", "")
+
+        # Decode the base64 body (if present)
+        try:
+            decoded_body = base64.urlsafe_b64decode(raw_body + '==').decode()
+        except Exception:
+            decoded_body = "<decode error>"
+
+        return cls(sender=sender, subject=subject, body=decoded_body)
+
 
 def test_id() -> None:
     """Test id method."""
