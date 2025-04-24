@@ -1,5 +1,6 @@
 # src/message_impl/src/tests/test_message_impl.py
 import base64
+from typing import Optional
 import pytest
 from email.message import Message as EmailMessage
 import email.utils # Import email.utils
@@ -9,17 +10,18 @@ from message_impl._impl import GmailMessage
 
 # --- Test Data Fixtures ---
 
-VALUE_EXCEPTION = "create_raw_data helper cannot directly create multipart bodies. Use create_multipart_raw_data."
+VALUE_EXCEPTION = "create_raw_data helper cannot directly create multipart bodies. Use create_multipart_raw_data." # noqa: E501
 
-def create_raw_data(
-    subject="Test Subject",
-    from_addr="sender@example.com",
-    to_addr="recipient@example.com",
-    date_str="Thu, 24 Apr 2025 10:00:00 +0000", # Valid RFC 2822 date
-    body="This is the body.",
-    content_type='text/plain; charset="utf-8"', # Default to utf-8
-    extra_headers=None,
+def create_raw_data( #noqa: PLR0913
+    subject: str = "Test Subject",
+    from_addr: str = "sender@example.com",
+    to_addr: str = "recipient@example.com",
+    date_str: str = "Thu, 24 Apr 2025 10:00:00 +0000",
+    body: str = "This is the body.",
+    content_type: str = 'text/plain; charset="utf-8"',
+    extra_headers: dict[str, str] | None = None,
 ) -> str:
+    """Return a base64 encoded raw email message."""
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = from_addr
@@ -61,12 +63,12 @@ def create_raw_data(
 # create_multipart_raw_data remains the same as it was likely correct
 
 def create_multipart_raw_data( #noqa: PLR0913
-    subject="Multipart Test", #noqa: ANN001
-    from_addr="sender@example.com", #noqa: ANN001
-    to_addr="recipient@example.com", #noqa: ANN001
-    date_str="Thu, 24 Apr 2025 11:00:00 +0000", #noqa: ANN001
-    text_body="This is the plain text part.", #noqa: ANN001
-    html_body="<p>This is the HTML part.</p>",  #noqa: ANN001
+    subject: str="Multipart Test",
+    from_addr: str="sender@example.com",
+    to_addr: str="recipient@example.com",
+    date_str: str="Thu, 24 Apr 2025 11:00:00 +0000",
+    text_body: str="This is the plain text part.",
+    html_body: str="<p>This is the HTML part.</p>",
 ) -> str:
     """Return helper for basic multipart/alternative."""
     outer = EmailMessage()

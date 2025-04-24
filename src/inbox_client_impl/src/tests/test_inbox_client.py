@@ -7,25 +7,24 @@ import pytest
 
 @pytest.fixture
 def mock_google_service() -> MagicMock:
-    """Provides a mock Google API service resource object."""
+    """Provide mock Google API service resource object."""
     mock_service = MagicMock(name="Google Service Resource")
     # Mock the chained calls structure used in the methods
     mock_users = mock_service.users.return_value
     mock_messages = mock_users.messages.return_value
     # Configure default return values for execute() on different calls
-    mock_messages.list.return_value.execute.return_value = {"messages": []} # Default: no messages
-    mock_messages.get.return_value.execute.return_value = {"raw": ""} # Default: empty raw data
-    mock_messages.send.return_value.execute.return_value = {"id": "sent_id_123"} # Default: success
-    mock_messages.delete.return_value.execute.return_value = {} # Default: success (no return needed)
-    mock_messages.modify.return_value.execute.return_value = {} # Default: success
+    mock_messages.list.return_value.execute.return_value = {"messages": []} # Default: no messages #noqa: E501
+    mock_messages.get.return_value.execute.return_value = {"raw": ""} # Default: empty raw data #noqa: E501
+    mock_messages.send.return_value.execute.return_value = {"id": "sent_id_123"} # Default: success #noqa: E501
+    mock_messages.delete.return_value.execute.return_value = {} # Default: success (no return needed) #noqa: E501
+    mock_messages.modify.return_value.execute.return_value = {} # Default: success #noqa: E501
     return mock_service
 
 @pytest.fixture
 def gmail_client(mock_google_service: MagicMock) -> GmailClient:
-    """Provides a GmailClient instance initialized with a mocked service."""
+    """Provide GmailClient instance initialized with a mocked service."""
     # Instantiate the client directly, bypassing the complex __init__ auth logic
-    client = GmailClient(service=mock_google_service)
-    return client
+    return GmailClient(service=mock_google_service)
 
 
 @patch("inbox_client_impl.GmailClient")
@@ -50,7 +49,7 @@ def test_inbox_client_creation(mock_gmail_client_class: MagicMock) -> None:
 @patch("inbox_client_impl._impl.Request")
 @patch("inbox_client_impl._impl.Credentials")
 @patch("os.environ.get")
-def test_init_with_env_vars(mock_getenv, mock_creds_class, mock_request, mock_build):
+def test_init_with_env_vars(mock_getenv, mock_creds_class, mock_request, mock_build) -> None: #type: ignore[no-untyped-def] # noqa: E501, ANN001, ARG001
     """Test __init__ authentication using environment variables."""
     # Configure mocks
     mock_getenv.side_effect = lambda key, default=None: {
@@ -68,10 +67,10 @@ def test_init_with_env_vars(mock_getenv, mock_creds_class, mock_request, mock_bu
     # Assertions
     mock_creds_class.assert_called_once_with(
         None,
-        refresh_token="env_refresh_token",
-        token_uri="env_token_uri",
+        refresh_token="env_refresh_token", # noqa: S106
+        token_uri="env_token_uri", # noqa: S106
         client_id="env_client_id",
-        client_secret="env_client_secret",
+        client_secret="env_client_secret", # noqa: S106
         scopes=GmailClient.SCOPES
     )
     mock_creds_instance.refresh.assert_called_once()

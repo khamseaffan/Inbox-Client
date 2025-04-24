@@ -78,11 +78,11 @@ class GmailClient(inbox_client_protocol.Client):
                     try:
                         creds.refresh(Request()) # type: ignore[no-untyped-call]
                     except Exception as e: # pragma: no cover
-                         print(f"Error refreshing token from file: {e}") # pragma: no cover
-                         creds = None # Force re-auth if refresh fails # pragma: no cover
+                         print(f"Error refreshing token from file: {e}") # pragma: no cover #noqa: E501
+                         creds = None # Force re-auth if refresh fails # pragma: no cover #noqa: E501
                 else: # pragma: no cover
                     # Run the interactive flow only if absolutely necessary
-                    print("Running interactive authentication flow...") # pragma: no cover
+                    print("Running interactive authentication flow...") # pragma: no cover #noqa: E501
                     if not os.path.exists(creds_path): #noqa: PTH110 # pragma: no cover
                         # This error should only happen in local dev if file is missing
                         raise FileNotFoundError( #noqa: TRY003 # pragma: no cover
