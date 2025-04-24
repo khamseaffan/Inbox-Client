@@ -1,5 +1,5 @@
 import base64
-import pytest 
+import pytest
 import message  # Import the message protocol package
 import inbox_client_protocol # Import the client protocol package
 

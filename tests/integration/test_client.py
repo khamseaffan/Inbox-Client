@@ -3,7 +3,7 @@ from collections.abc import Iterator
 import message
 import inbox_client_protocol
 
-import pytest 
+import pytest
 
 import inbox_client_impl
 import message_impl

@@ -65,7 +65,7 @@ class GmailClient(inbox_client_protocol.Client):
                 try:
                     creds = Credentials.from_authorized_user_file( # type: ignore[no-untyped-call]
                         token_path, self.SCOPES
-                    ) 
+                    )
                 except Exception as e:
                      print(f"Error loading token from {token_path}: {e}")
                      creds = None # Ensure creds is None if loading fails
