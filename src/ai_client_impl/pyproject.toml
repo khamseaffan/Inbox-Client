@@ -1,0 +1,19 @@
+[project]
+name = "ai_client_impl"
+version = "0.1.0"
+description = "AI Client Implementation"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "requests",
+    "python-dotenv",
+    "google-generativeai"
+    "ai-client",
+]
+  
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+ai-client = { workspace = true }

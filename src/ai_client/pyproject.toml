@@ -1,0 +1,13 @@
+[project]
+name = "ai_client"
+version = "0.1.0"
+description = "AI Client Protocol"
+readme = "README.md"
+requires-python = ">=3.11"
+  
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+ai_client = { workspace = true }
