@@ -1,3 +1,5 @@
+"""Protocol for a AI Client."""
+
 from typing import Any
 from abc import ABC, abstractmethod
 
@@ -18,6 +20,7 @@ class IAIConversationClient(ABC):
 
         Returns:
             dict[str, Any]: The AI's response message as a dictionary.
+
         """
         ...
 
@@ -30,7 +33,9 @@ class IAIConversationClient(ABC):
             session_id (str): The session identifier.
 
         Returns:
-            list[dict[str, Any]]: List of message dictionaries representing the chat history.
+            list[dict[str, Any]]: List of message dictionaries representing
+            the chat history.
+
         """
         ...
 
@@ -45,6 +50,7 @@ class IAIConversationClient(ABC):
 
         Returns:
             bool: True if preferences were successfully set.
+
         """
         ...
 
@@ -58,6 +64,7 @@ class IAIConversationClient(ABC):
 
         Returns:
             str: The new session's unique identifier.
+
         """
         ...
 
@@ -71,6 +78,7 @@ class IAIConversationClient(ABC):
 
         Returns:
             bool: True if the session was successfully ended.
+
         """
         ...
 def get_client() -> IAIConversationClient:

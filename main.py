@@ -26,13 +26,14 @@ def main() -> None:
         for msg in client.get_messages():
             logger.info(f"Found message: ID={msg.id}, Subject='{msg.subject}'")
             count += 1
-            message = (f"Analyze this email and give me the percent probability it is spam: Subject: {msg.subject}, Body: {msg.body}, From: {msg.from_} ")
+            message = ("Analyze this email and give me the percent probability it is "
+                "spam: Subject: {msg.subject}, Body: {msg.body}, From: {msg.from_} ")
             response = ai_client.send_message(session_id, message)
             result[msg.id] = response["content"]
             if count >= 5: # Limit for testing
                  break
         logger.info(f"Finished fetching and analyzing {count} messages.")
-        with open('output.csv', 'w', newline='') as file:
+        with open("output.csv", "w", newline="") as file:
             writer = csv.writer(file)
             writer.writerow(["Email ID", "Percentage Probability of SPAM"])
             for key,value in result.items():

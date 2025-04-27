@@ -85,9 +85,9 @@ class GmailClient(inbox_client_protocol.Client):
                     print("Running interactive authentication flow...") # pragma: no cover #noqa: E501
                     if not os.path.exists(creds_path): #noqa: PTH110 # pragma: no cover
                         # This error should only happen in local dev if file is missing
-                        raise FileNotFoundError( #noqa: TRY003 # pragma: no cover
-                            f"'{creds_path}' not found. Cannot run interactive auth." #noqa: EM102 # pragma: no cover
-                        )
+                        raise FileNotFoundError( # pragma: no cover
+                            f"'{creds_path}' not found. Cannot run interactive auth."
+                        ) # pragma: no cover
                     try: # pragma: no cover
                         flow = InstalledAppFlow.from_client_secrets_file(
                             creds_path, self.SCOPES

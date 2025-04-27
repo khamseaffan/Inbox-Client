@@ -7,7 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "requests",
     "python-dotenv",
-    "google-generativeai"
+    "google-generativeai",
     "ai-client",
 ]
   

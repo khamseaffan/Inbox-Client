@@ -4,9 +4,8 @@ from datetime import datetime
 from typing import List, Dict, Optional, Any
 
 class MessageRole(Enum):
-    """
-    Enum representing the role of a message sender.
-    """
+    """Enum representing the role of a message sender."""
+
     USER = "user"
     SYSTEM = "system"
     FUNCTION = "function"
@@ -14,30 +13,32 @@ class MessageRole(Enum):
 
 class Message:
     """
-    Represents a single message in a conversation.
-    
+    Represent a single message in a conversation.
+
     Attributes:
         content (str): The message content.
         role (MessageRole): The sender's role.
         id (str): Unique identifier for the message.
         timestamp (datetime): Time when the message was created.
+
     """
 
     def __init__(
         self,
         content: str,
         role: MessageRole = MessageRole.USER,
-        message_id: Optional[str] = None,
-        timestamp: Optional[datetime] = None
-    ):
+        message_id: str | None = None,
+        timestamp: datetime | None = None
+    ) -> None:
         """
-        Initializes a Message object.
+        Initialize a Message object.
 
         Args:
             content (str): The message text.
             role (MessageRole, optional): The sender's role. Defaults to USER.
-            message_id (str, optional): Unique message ID. Auto-generated if not provided.
-            timestamp (datetime, optional): Time of message creation. Defaults to current time.
+            message_id (str, optional): Unique message ID.
+            timestamp (datetime, optional): Time of message creation.
+
         """
         self._content = content
         self._role = role
@@ -46,55 +47,50 @@ class Message:
 
     @property
     def id(self) -> str:
-        """
-        Returns the unique ID of the message.
-        """
+        """Returns the unique ID of the message."""
         return self._id
 
     @property
     def content(self) -> str:
-        """
-        Returns the content of the message.
-        """
+        """Returns the content of the message."""
         return self._content
 
     @property
     def role(self) -> MessageRole:
-        """
-        Returns the role of the sender.
-        """
+        """Returns the role of the sender."""
         return self._role
 
     @property
     def timestamp(self) -> datetime:
-        """
-        Returns the timestamp of the message.
-        """
+        """Returns the timestamp of the message."""
         return self._timestamp
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
-        Serializes the message to a dictionary format.
+        Serialize the message to a dictionary format.
+
         Only includes role and content.
 
         Returns:
             dict: A dictionary representation of the message.
+
         """
         return {
             "role": self._role.value,
             "content": self._content
         }
-    
+
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Message':
+    def from_dict(cls, data: dict[str, Any]) -> "Message":
         """
-        Deserializes a message object from a dictionary.
+        Deserialize a message object from a dictionary.
 
         Args:
             data (dict): Dictionary containing message data.
 
         Returns:
             Message: A reconstructed Message object.
+
         """
         timestamp_str = data.get("timestamp")
         try:
@@ -111,83 +107,82 @@ class Message:
 
 class Conversation:
     """
-    Represents a full conversation consisting of multiple messages.
-    
+    Represent a full conversation consisting of multiple messages.
+
     Attributes:
         id (str): Unique identifier for the conversation.
         title (str): Title of the conversation.
         messages (List[Message]): List of messages in the conversation.
+
     """
 
     def __init__(
         self,
-        conversation_id: Optional[str] = None,
-        title: Optional[str] = None,
-        system_prompt: Optional[str] = None
-    ):
+        conversation_id: str | None = None,
+        title: str | None = None,
+        system_prompt: str | None = None
+    ) -> None:
         """
-        Initializes a new Conversation instance.
+        Initialize a new Conversation instance.
 
         Args:
             conversation_id (str, optional): Custom ID for the conversation.
             title (str, optional): Optional title of the conversation.
             system_prompt (str, optional): Initial system prompt message.
+
         """
         self._id = conversation_id or f"conv_{uuid.uuid4().hex[:8]}"
         self._title = title or f"Conversation {self._id}"
-        self._messages: List[Message] = []
+        self._messages: list[Message] = []
 
         if system_prompt:
             self.add_message(Message(system_prompt, MessageRole.SYSTEM))
 
     @property
     def id(self) -> str:
-        """
-        Returns the conversation ID.
-        """
+        """Return the conversation ID."""
         return self._id
 
     @property
     def title(self) -> str:
-        """
-        Returns the conversation title.
-        """
+        """Return the conversation title."""
         return self._title
 
     @property
-    def messages(self) -> List[Message]:
-        """
-        Returns a copy of the list of messages in the conversation.
-        """
+    def messages(self) -> list[Message]:
+        """Return a copy of the list of messages in the conversation."""
         return self._messages.copy()
 
     def add_message(self, message: Message) -> None:
         """
-        Adds a message to the conversation.
+        Add a message to the conversation.
 
         Args:
             message (Message): The message object to add.
+
         """
         self._messages.append(message)
 
-    def get_latest_messages(self, count: int = 5) -> List[Message]:
+    def get_latest_messages(self, count: int = 5) -> list[Message]:
         """
-        Returns the most recent messages in the conversation.
+        Return the most recent messages in the conversation.
 
         Args:
             count (int, optional): Number of latest messages to retrieve. Defaults to 5.
 
         Returns:
             List[Message]: The latest messages.
+
         """
         return self._messages[-count:] if self._messages else []
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
-        Serializes the conversation to a dictionary format.
+        Serialize the conversation to a dictionary format.
 
         Returns:
             dict: Dictionary containing the conversation data.
+
         """
         return {
             "id": self._id,
@@ -204,15 +199,16 @@ class Conversation:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Conversation':
+    def from_dict(cls, data: dict[str, Any]) -> "Conversation":
         """
-        Deserializes a conversation from dictionary data.
+        Deserialize a conversation from dictionary data.
 
         Args:
             data (dict): The dictionary containing conversation details.
 
         Returns:
             Conversation: The reconstructed Conversation object.
+
         """
         conversation = cls(
             conversation_id=data.get("id"),
