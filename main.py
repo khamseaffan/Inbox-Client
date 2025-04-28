@@ -3,33 +3,33 @@ import time
 import logging
 import os
 from dotenv import load_dotenv
-from inbox_client_impl import GmailClient # Or use inbox_client_protocol.get_client()
 
 load_dotenv()
+
+import message
+import inbox_client_protocol
+
+import inbox_client_impl
+import message_impl
 
 # Configure structured logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 def main() -> None:
-    """Instantiate the client to trigger auth flow (using .env locally)."""
-    logger = logging.getLogger(__name__)
-    try:
-        client = GmailClient()
-        logger.info("GmailClient initialized successfully.")
-
-        count = 0
-        for msg in client.get_messages():
-            logger.info(f"Found message: ID={msg.id}, Subject='{msg.subject}'")
-            count += 1
-            if count >= 3: # Limit for testing
-                 break
-        logger.info(f"Finished fetching {count} messages.")
-
-    except FileNotFoundError as e:
-        logger.exception("Initialization failed")
-    except RuntimeError as e:
-        logger.exception("Credential acquisition failed")
+    client = inbox_client_protocol.get_client()
+    messages = client.get_messages()
+    msg = next(messages)
+    msg_id = msg.id
+    for message in messages:
+        logging.info(f"Message ID: {message.id}")
+        logging.info(f"Message Body: {message.body}")
+        logging.info(f"Message Subject: {message.subject}")
+        logging.info(f"Message Date: {message.date}")
+    return
 
 if __name__ == "__main__":
     main()
+
+
+
