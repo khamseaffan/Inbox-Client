@@ -98,6 +98,7 @@ ignore = [
     "D102", # Gemini API Client ignore
     "D101", # Gemini API Client ignore
     "ARG001", # cli.py ignore
+    "EXE001", # cli.py ignore
 ]
 
 
