@@ -2,13 +2,14 @@
 
 ## Description
 
-This repository defines a modular, protocol-based interface and implementation for a Gmail client. It utilizes Python's `typing.Protocol` to describe standardized, mockable interfaces for both email messages and the inbox client itself, promoting separation of concerns and testability.
+This repository defines a modular, protocol-based interface and implementation for a Gmail client and also integrates an AI client. It utilizes Python's `typing.Protocol` to describe standardized, mockable interfaces for both email messages and the inbox client itself, promoting separation of concerns and testability.
 
 The project follows a workspace structure managed by `uv`, with distinct packages for protocols and their concrete implementations.
 
 ### Scope
 
-This inbox client is designed primarily to read, parse, and interact with messages from a Gmail account.
+This inbox client is designed primarily to read, parse, and interact with messages from a Gmail account and then feed them to an ai client and analyze the percentage probability that
+the email is spam. 
 
 #### Implemented Features
 
@@ -18,13 +19,15 @@ This inbox client is designed primarily to read, parse, and interact with messag
 - Marking a message as read.
 - Basic parsing of message headers and body content.
 - Authentication via OAuth 2.0 (using local files or environment variables for CI).
+- Analyzing message for spam percentage
+- Output results to CSV file
 
 #### Out of Scope
 
 - Support for non-Gmail services (e.g., Outlook, Yahoo Mail).
 - Advanced inbox search/filtering capabilities beyond basic listing.
 - Handling of complex attachments (downloading, parsing).
-- Advanced spam detection or automatic categorization.
+- Automatic categorization.
 - Real-time message streaming or push notifications.
 
 ### Core Components
@@ -33,6 +36,8 @@ This inbox client is designed primarily to read, parse, and interact with messag
 - **`message_impl`**: Provides `GmailMessage`, a concrete implementation of the `Message` protocol using Python's `email` library.
 - **`inbox_client_protocol`**: Defines the `Client` protocol (interface) for interacting with an inbox.
 - **`inbox_client_impl`**: Provides `GmailClient`, a concrete implementation of the `Client` protocol using the Google Gmail API.
+- **`ai_conversation_client`**: Provides `GeminiAPIClient`, a concrete implementation of AI
+client using the Gemini API. 
 
 ## API Usage Example
 
