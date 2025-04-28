@@ -11,7 +11,6 @@ import inbox_client_impl
 import message_impl
 import ai_client_impl
 
-@pytest.mark.integration
 def test_e2e() -> None:
     """Test e2e method returns a dict."""
     client = inbox_client_protocol.get_client()

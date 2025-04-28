@@ -1,7 +1,7 @@
 [project]
 name = "inbox-client"
 version = "0.1.0"
-description = "Add your description here"
+description = "Inbox Client for Gmail"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -107,7 +107,9 @@ members = [
     "src/inbox_client_protocol",
     "src/inbox_client_impl",
     "src/message",
-    "src/message_impl"
+    "src/message_impl",
+    "src/ai_client",
+    "src,ai_client_impl"
 ]
 # --- WORKSPACE ---
 
@@ -138,6 +140,8 @@ mypy_path = [
     "src/inbox_client_impl/src",
     "src/message/src",
     "src/message_impl/src",
+    "src/ai_client/src",
+    "src/ai_client_impl/src"
 ]
 # --- MYPY ---
 
