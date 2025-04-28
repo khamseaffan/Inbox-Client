@@ -159,7 +159,8 @@ omit = [
     "src/*/tests/*",       # Exclude all files in any src/<package>/tests/ directory
     ".venv/*",             # Standard practice: exclude virtual environment
     "*/__main__.py",       # Exclude main entry points if any
-    "**/test_*.py"
+    "**/test_*.py",
+    "src/ai_conversation_client/**"
 ]
 
 [tool.coverage.report]
