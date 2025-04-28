@@ -109,7 +109,7 @@ members = [
     "src/message",
     "src/message_impl",
     "src/ai_client",
-    "src,ai_client_impl"
+    "src/ai_client_impl"
 ]
 # --- WORKSPACE ---
 
