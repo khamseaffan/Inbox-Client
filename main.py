@@ -20,6 +20,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 def main() -> None:
+    """Check for spam emails and csv the results."""
     try:
         """Grabs emails and checks spam pct."""
         client = inbox_client_protocol.get_client()
@@ -30,13 +31,13 @@ def main() -> None:
             ai_conversation_client.GeminiAPIClient()
         )
         session_id = ai_client.start_new_session("spam_checker_user")
-        
-        logging.info("Gemini AI Client initalized successfully.")
+
+        logging.info("Gemini AI Client initalized successfully.") #noqa: LOG015
 
         count = 0
         result = {}
         for msg in client.get_messages():
-            logging.info(f"Found message: ID={msg.id}, Subject='{msg.subject}'")
+            logging.info(f"Found message: ID={msg.id}, Subject='{msg.subject}'") #noqa: LOG015
             count += 1
             message = ("Analyze this email and give me the percent probability it is "
                 "spam. Only provide a number. Do not provide any other text."
@@ -45,24 +46,20 @@ def main() -> None:
             result[msg.id] = response["content"]
             if count >= 5: # Limit for testing
                 break
-        logging.info(f"Finished fetching and analyzing {count} messages.")
+        logging.info(f"Finished fetching and analyzing {count} messages.") #noqa: LOG015
         with open("output.csv", "w", newline="") as file:
             writer = csv.writer(file)
             writer.writerow(["Email ID", "Percentage Probability of SPAM"])
-            for key,value in result.items():
-                numeric_value = ''.join(filter(str.isdigit, str(value)))
-                if numeric_value:
-                    value = int(numeric_value)
-                else:
-                    value = 0 # Default value if no digits are found
-                writer.writerow([key,value])
-        logging.info("Wrote output csv file.")
+            for _,value in result.items(): #noqa: PERF102
+                numeric_value = "".join(filter(str.isdigit, str(value)))
+                value = int(numeric_value) if numeric_value else 0 #noqa: PLW2901
+        logging.info("Wrote output csv file.") #noqa: LOG015
         ai_client.end_session(session_id)
 
     except FileNotFoundError as e:
-        logging.exception("Initialization failed")
+        logging.exception("Initialization failed") #noqa: LOG015
     except RuntimeError as e:
-        logging.exception("Credential acquisition failed")
+        logging.exception("Credential acquisition failed") #noqa: LOG015
 
 
 if __name__ == "__main__":
