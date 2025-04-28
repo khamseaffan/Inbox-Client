@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#-*- coding: utf-8 -*-
 # mypy: ignore-errors
 """
 Command-line interface for the AI Conversation Client.
