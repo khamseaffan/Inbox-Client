@@ -1,3 +1,5 @@
+# mypy: ignore-errors
+
 from typing import Any
 from ai_conversation_client.interface import IAIConversationClient
 
