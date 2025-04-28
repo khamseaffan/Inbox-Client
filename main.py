@@ -20,6 +20,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 def main() -> None:
+    """Grabs emails and checks spam pct."""
     client = inbox_client_protocol.get_client()
     messages = client.get_messages()
     msg = next(messages)
@@ -29,14 +30,14 @@ def main() -> None:
     )
     session_id = ai_client.start_new_session("spam_checker_user")
 
-    print(ai_client.send_message(message="Hello, how are you?", session_id=session_id).values())
+    print(ai_client.send_message(message="Hello, how are you?",
+                                 session_id=session_id).values())
 
     # for message in messages:
     #     logging.info(f"Message ID: {message.id}")
     #     logging.info(f"Message Body: {message.body}")
     #     logging.info(f"Message Subject: {message.subject}")
     #     logging.info(f"Message Date: {message.date}")
-    return
 
 if __name__ == "__main__":
     main()

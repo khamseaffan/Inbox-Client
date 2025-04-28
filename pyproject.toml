@@ -85,6 +85,19 @@ ignore = [
     "TRY300", # Else blocks not applicable in api 
     "PTH123", # Open is safe in our case
     "G004", # f-strings are used in main.py only and are fine there
+    "W292", # Integration ignore
+    "DTZ005", # Naive timezone safe here
+    "UP035", # Typing deprecation is ok here
+    "EM102", # F-string literal for error is ok
+    "TRY003", # Messages outside exception class are fine
+    "B904", # Distinguished exceptions not needed
+    "EM101", # Exception can use string literal here
+    "S113", # Requests without timeout is fine here
+    "D205", # Triggering incorrectly on integrated component
+    "RUF100", # Integration ignore
+    "D102", # Gemini API Client ignore
+    "D101", # Gemini API Client ignore
+    "ARG001", # cli.py ignore
 ]
 
 

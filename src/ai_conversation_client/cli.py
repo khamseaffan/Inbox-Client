@@ -17,6 +17,7 @@ async def interactive_chat(client: AIConversationClient, user_id: str) -> None:
     Args:
         client (AIConversationClient): The conversation client instance.
         user_id (str): Unique identifier for the user.
+
     """
     session_id = client.start_new_session(user_id)
     print(f"New session started. Session ID: {session_id}")
@@ -42,10 +43,11 @@ async def interactive_chat(client: AIConversationClient, user_id: str) -> None:
 
 def list_sessions(client: AIConversationClient) -> None:
     """
-    Placeholder function to list sessions.
+    List sessions placeholder.
 
     Args:
         client (AIConversationClient): The conversation client instance.
+
     """
     print("Session listing is not implemented for the generic interface.")
 
@@ -56,6 +58,7 @@ def show_history(client: AIConversationClient, session_id: str) -> None:
     Args:
         client (AIConversationClient): The conversation client instance.
         session_id (str): The ID of the session to show.
+
     """
     try:
         history = client.get_chat_history(session_id)
@@ -74,6 +77,7 @@ async def run_cli(client: AIConversationClient) -> None:
 
     Args:
         client (AIConversationClient): The conversation client instance.
+
     """
     parser = argparse.ArgumentParser(description="AI Conversation CLI")
     subparsers = parser.add_subparsers(dest="command")
