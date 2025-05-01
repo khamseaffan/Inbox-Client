@@ -38,3 +38,14 @@ The `Message` protocol is defined using `typing.Protocol`, allowing for flexible
 | `body`    | `str` | Body content of the message                                   |
 
 All attributes are exposed as **read-only properties**, ensuring that message objects are immutable from the interface perspective.
+
+## Usage Example
+
+The `Message` protocol is used to provide a consistent interface across implementations.
+
+```python
+from message import Message
+
+def summarize_email(msg: Message) -> str:
+    return f"[{msg.date}] {msg.from_} -> {msg.to}: {msg.subject}"
+```
