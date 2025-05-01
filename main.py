@@ -15,11 +15,11 @@ import ai_conversation_client
 
 load_dotenv()
 
-DEFAULT_PROMPT = '''Analyze this email and return two things in JSON format:
+DEFAULT_PROMPT = """Analyze this email and return two things in JSON format:
 1. The percent probability that this email is spam (integer).
 2. The tone of the email (e.g., "formal", "casual", "urgent").
 Return JSON like: {"pct_spam": 85, "tone": "formal"}.
-Subject: {subject}, Body: {body}, From: {from_}'''
+Subject: {subject}, Body: {body}, From: {from_}"""
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

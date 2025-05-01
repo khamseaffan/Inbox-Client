@@ -11,10 +11,17 @@ from ai_conversation_client.conversation import Conversation, Message, MessageRo
 
 # MyPy-safe dynamic typing for Gemini SDK
 if TYPE_CHECKING:
-
     class GenerativeModelConstructor(Protocol):
-        def __call__(self, model_name: str) -> Any: ...
-        def start_chat(self, history: list[Any]) -> Any: ...
+        """Protocol for creating generative models."""
+
+        def __call__(self, model_name: str) -> Any:
+            """Return a model instance by name."""
+            ...
+
+        def start_chat(self, history: list[Any]) -> Any:
+            """Start a new chat session using conversation history."""
+            ...
+
 else:
     GenerativeModelConstructor = Any
 
