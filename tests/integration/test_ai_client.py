@@ -5,13 +5,14 @@ def test_ai_response_format(monkeypatch):
     """Ensure AI client response contains a digit string for % spam."""
 
     class MockGemini:
-        def send(self, _prompt: str) -> dict:
-            return {"content": "87"}  # Simulated response
+        def send_message(self, session_id: str, message: str) -> dict:
+            # Return a simulated valid AI response
+            return {"content": "87"}
 
-        def start_new_session(self, user_id: str) -> str:
+        def start_new_session(self, _user_id: str) -> str:
             return "mock-session-id"
 
-        def end_session(self, session_id: str) -> None:
+        def end_session(self, _session_id: str) -> None:
             pass
 
     ai_client = AIConversationClient(MockGemini())
