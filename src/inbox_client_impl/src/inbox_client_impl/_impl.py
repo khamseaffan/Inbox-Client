@@ -2,9 +2,9 @@
 from typing import ClassVar, Optional
 from collections.abc import Iterator
 
-from googleapiclient.discovery import build, Resource # type: ignore[import-untyped]
+from googleapiclient.discovery import build, Resource
 from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow # type: ignore[import-untyped]
+from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
 
 import base64
