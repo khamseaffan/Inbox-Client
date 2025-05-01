@@ -138,6 +138,7 @@ python_functions = "test_*"
 [tool.mypy]
 strict = true
 explicit_package_bases = true
+ignore_missing_imports = true
 mypy_path = [
     "src/inbox_client_protocol/src",
     "src/inbox_client_impl/src",

@@ -1,12 +1,12 @@
+from typing import Any
 from ai_conversation_client import AIConversationClient
 
 
-def test_ai_response_format(monkeypatch):
+def test_ai_response_format(monkeypatch: Any) -> None:
     """Ensure AI client response contains a digit string for % spam."""
 
     class MockGemini:
-        def send_message(self, session_id: str, message: str) -> dict:
-            # Return a simulated valid AI response
+        def send_message(self, _session_id: str, _message: str) -> dict[str, Any]:
             return {"content": "87"}
 
         def start_new_session(self, _user_id: str) -> str:
