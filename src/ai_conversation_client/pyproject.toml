@@ -47,3 +47,12 @@ ignore = [
     "D101", # We do not have authority or desire to create new docstrings for their documentation
     "UP035", # They depend on deprecated functionality, we will not modify it
 ]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = "requests.*"
+ignore_missing_imports = true
