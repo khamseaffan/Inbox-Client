@@ -56,7 +56,7 @@ _ = "cov"
 
 # --- RUFF ---
 [tool.ruff]
-line-length = 88  # Default formatting width
+line-length = 100  # Default formatting width
 target-version = "py311"  # Adjust based on actual Python version
 
 [tool.ruff.lint]
@@ -84,6 +84,9 @@ ignore = [
     "TRY300", # Else blocks not applicable in api 
     "PTH123", # Open is safe in our case
     "G004", # f-strings are used in main.py only and are fine there
+    "LOG015", # logs are valid on root
+    "PTH110", # We use old-school paths
+    "PTH107", # We use old-school paths
 ]
 
 

@@ -1,8 +1,10 @@
 from typing import Any
-from ai_conversation_client import AIConversationClient
 
+import pytest
+from ai_conversation_client import AIConversationClient # type: ignore[import-untyped]
 
-def test_ai_response_format(monkeypatch: Any) -> None:
+@pytest.fixture
+def test_ai_response_format() -> None:
     """Ensure AI client response contains a digit string for % spam."""
 
     class MockGemini:

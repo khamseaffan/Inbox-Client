@@ -11,7 +11,7 @@ import message
 import inbox_client_protocol
 import inbox_client_impl
 import message_impl
-import ai_conversation_client
+import ai_conversation_client # type: ignore[import-untyped]
 
 load_dotenv()
 

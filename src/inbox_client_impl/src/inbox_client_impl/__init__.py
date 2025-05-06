@@ -6,8 +6,8 @@ import inbox_client_protocol
 # Import the concrete implementation class from the _impl module
 from ._impl import GmailClient
 
-def get_client_impl(interactive: bool = False) -> inbox_client_protocol.Client:
-    """Factory function to return an instance of the inbox client."""
+def get_client_impl(interactive: bool = False) -> inbox_client_protocol.Client: # noqa: FBT002 FBT001
+    """Return instance of the inbox client."""
     # Dynamically import the implementation to avoid circular dependencies
     # and allow for different implementations in the future.
     try:

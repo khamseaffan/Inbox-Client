@@ -18,7 +18,7 @@ def mock_google_service() -> MagicMock:
     mock_messages.get.return_value.execute.return_value = {"raw": ""} # Default: empty raw data #noqa: E501
     mock_messages.send.return_value.execute.return_value = {"id": "sent_id_123"} # Default: success #noqa: E501
     mock_messages.delete.return_value.execute.return_value = {} # Default: success (no return needed) #noqa: E501
-    mock_messages.modify.return_value.execute.return_value = {} # Default: success #noqa: E501
+    mock_messages.modify.return_value.execute.return_value = {} # Default: success
     return mock_service
 
 @pytest.fixture
@@ -50,7 +50,7 @@ def test_inbox_client_creation(mock_gmail_client_class: MagicMock) -> None:
 @patch("inbox_client_impl._impl.Request")
 @patch("inbox_client_impl._impl.Credentials")
 @patch("os.environ.get")
-def test_init_with_env_vars(mock_getenv, mock_creds_class, mock_request, mock_build) -> None: #type: ignore[no-untyped-def] # noqa: E501, ANN001, ARG001
+def test_init_with_env_vars(mock_getenv, mock_creds_class, mock_request, mock_build) -> None: #type: ignore[no-untyped-def] # noqa: ANN001, ARG001
     """Test __init__ authentication using environment variables."""
     # Configure mocks
     mock_getenv.side_effect = lambda key, default=None: {

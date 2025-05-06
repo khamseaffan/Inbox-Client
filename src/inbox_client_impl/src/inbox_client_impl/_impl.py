@@ -23,12 +23,13 @@ class GmailClient(inbox_client_protocol.Client):
         "https://www.googleapis.com/auth/gmail.modify"
     ]
 
-    def __init__(self, service: Resource | None = None, interactive: bool = False) -> None: #noqa: PLR0915, PLR0912, C901
+    def __init__(self, service: Resource | None = None, interactive: bool = False) -> None: #noqa: PLR0915, PLR0912, C901, FBT001, FBT002
         """Initialize the GmailClient, handling authentication.
 
         Args:
             service: An optional pre-configured Google API service resource.
             interactive: If True, force interactive login, ignoring env vars and token.json.
+
         """
         if service:
             self.service = service
@@ -73,7 +74,7 @@ class GmailClient(inbox_client_protocol.Client):
         # 3. Try Token File if not interactive and env vars failed
         if not creds and not interactive:
             print("Attempting to authenticate using local token file...")
-            if os.path.exists(token_path): #noqa: PTH110
+            if os.path.exists(token_path):
                 try:
                     creds = Credentials.from_authorized_user_file( # type: ignore[no-untyped-call]
                         token_path, self.SCOPES
@@ -96,7 +97,7 @@ class GmailClient(inbox_client_protocol.Client):
                 print("No valid credentials found, falling back to interactive login.")
                 creds = self._run_interactive_flow(creds_path)
             elif not creds: # If interactive was forced but failed
-                 raise RuntimeError("Interactive authentication failed.")
+                 raise RuntimeError("Interactive authentication failed.") #noqa: EM101 TRY003
 
         # --- End Authentication Logic --- #
 
@@ -116,24 +117,21 @@ class GmailClient(inbox_client_protocol.Client):
             raise # Re-raise the exception
 
     def _run_interactive_flow(self, creds_path: str) -> Credentials | None:
-        """Runs the interactive OAuth flow."""
+        """Run the interactive OAuth flow."""
         print("Running interactive authentication flow...")
-        if not os.path.exists(creds_path): #noqa: PTH110
-            raise FileNotFoundError(
-                f"'{creds_path}' not found. Cannot run interactive auth." #noqa: EM102
-            )
+        if not os.path.exists(creds_path):
+            raise FileNotFoundError(f"'{creds_path}' not found. Cannot run interactive auth.") #noqa: EM102 TRY003
         try:
             flow = InstalledAppFlow.from_client_secrets_file(
                 creds_path, self.SCOPES
             )
-            creds = flow.run_local_server(port=0)
-            return creds
+            return flow.run_local_server(port=0) # type: ignore[no-any-return]
         except Exception as e:
              print(f"Error during interactive auth flow: {e}")
              return None # Return None on failure
 
     def _save_token(self, creds: Credentials, token_path: str) -> None:
-        """Saves the credentials token to a file."""
+        """Save the credentials token to a file."""
         try:
             with open(token_path, "w") as token:
                 token.write(creds.to_json()) # type: ignore[no-untyped-call]

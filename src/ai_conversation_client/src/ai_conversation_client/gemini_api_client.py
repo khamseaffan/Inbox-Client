@@ -1,6 +1,6 @@
 import os
 import uuid
-import requests
+import requests # type: ignore[import-untyped]
 import importlib
 from dotenv import load_dotenv
 from typing import Any, TYPE_CHECKING, Protocol

@@ -62,7 +62,7 @@ class Client(Protocol):
         """
         raise NotImplementedError
 
-def get_client(interactive: bool = False) -> Client:
+def get_client(interactive: bool = False) -> Client: # noqa: FBT002 FBT001
     """
     Return an instance of a Mail Client.
 
