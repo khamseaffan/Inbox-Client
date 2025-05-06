@@ -2,8 +2,23 @@ from typing import Any
 
 import pytest
 from ai_conversation_client import AIConversationClient # type: ignore[import-untyped]
+from unittest.mock import patch, MagicMock
+import os
 
-@pytest.fixture
+# Patch environment variables for tests that need them
+@pytest.mark.integration
+def mock_env_vars():
+    """Provide environment variables for testing."""
+    with patch.dict(os.environ, {
+        "GMAIL_CLIENT_ID": "test-client-id",
+        "GMAIL_CLIENT_SECRET": "test-client-secret",
+        "GMAIL_REFRESH_TOKEN": "test-refresh-token",
+        "GMAIL_TOKEN_URI": "https://oauth2.googleapis.com/token",
+        "GEMINI_API_KEY": "test-gemini-api-key"
+    }):
+        yield
+
+@pytest.mark.integration
 def test_ai_response_format() -> None:
     """Ensure AI client response contains a digit string for % spam."""
 

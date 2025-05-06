@@ -14,7 +14,7 @@ EXPECTED_CSV_HEADER = ["Email ID", "Percentage Probability of SPAM", "Tone"]
 OUTPUT_FILENAME = "output.csv"
 TEST_EMAIL_LIMIT = 2 # Define a limit for the test run
 
-@pytest.fixture(autouse=True)
+@pytest.mark.integration
 def manage_output_file() -> None: # type: ignore[misc]
     """Fixture to ensure the output file is removed before and after the test."""
     # Setup: Remove the output file if it exists before the test
@@ -27,7 +27,7 @@ def manage_output_file() -> None: # type: ignore[misc]
     if os.path.exists(OUTPUT_FILENAME):
         os.remove(OUTPUT_FILENAME)
 
-
+@pytest.mark.integration
 def test_e2e_main_flow_real_clients(monkeypatch, caplog) -> None: # type: ignore[no-untyped-def]
     """Test the end-to-end flow using real inbox and AI clients."""
     caplog.set_level(logging.INFO) # Capture logs for debugging
