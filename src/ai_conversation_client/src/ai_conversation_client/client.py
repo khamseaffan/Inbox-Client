@@ -1,5 +1,5 @@
 from typing import Any
-from ai_conversation_client.interface import IAIConversationClient
+from .interface import IAIConversationClient
 
 class AIConversationClient(IAIConversationClient):
     """
@@ -16,6 +16,7 @@ class AIConversationClient(IAIConversationClient):
         Args:
             api_client (IAIConversationClient): The backend API client responsible for handling
                                                 AI interaction, session management, and preferences.
+
         """
         self.api_client = api_client
 
@@ -29,6 +30,7 @@ class AIConversationClient(IAIConversationClient):
 
         Returns:
             dict[str, Any]: The assistant's response message with metadata.
+
         """
         return self.api_client.send_message(session_id, message)
 
@@ -41,6 +43,7 @@ class AIConversationClient(IAIConversationClient):
 
         Returns:
             list[dict[str, Any]]: List of messages (user and assistant) in chronological order.
+
         """
         return self.api_client.get_chat_history(session_id)
 
@@ -54,6 +57,7 @@ class AIConversationClient(IAIConversationClient):
 
         Returns:
             bool: True if preferences were successfully stored.
+
         """
         return self.api_client.set_user_preferences(user_id, preferences)
 
@@ -66,6 +70,7 @@ class AIConversationClient(IAIConversationClient):
 
         Returns:
             str: The unique session ID generated for the conversation.
+
         """
         return self.api_client.start_new_session(user_id)
 
@@ -78,5 +83,6 @@ class AIConversationClient(IAIConversationClient):
 
         Returns:
             bool: True if the session was successfully terminated.
+
         """
         return self.api_client.end_session(session_id)

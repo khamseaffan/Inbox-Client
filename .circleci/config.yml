@@ -79,6 +79,7 @@ jobs:
           command: |
             source .venv/bin/activate
             # Target specific source and test directories for mypy
+            uv pip install types-requests
             mypy src tests --explicit-package-bases
       - run:
           name: "Enforce Coverage Threshold and Generate Reports"

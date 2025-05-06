@@ -99,7 +99,8 @@ members = [
     "src/inbox_client_protocol",
     "src/inbox_client_impl",
     "src/message",
-    "src/message_impl"
+    "src/message_impl",
+    "src/ai_conversation_client",
 ]
 # --- WORKSPACE ---
 
@@ -130,6 +131,8 @@ mypy_path = [
     "src/inbox_client_impl/src",
     "src/message/src",
     "src/message_impl/src",
+    "src/ai_conversation_client",
+
 ]
 # --- MYPY ---
 

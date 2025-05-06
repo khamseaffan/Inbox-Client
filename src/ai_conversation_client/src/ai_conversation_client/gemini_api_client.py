@@ -4,8 +4,8 @@ import requests
 import importlib
 from dotenv import load_dotenv
 from typing import Any, TYPE_CHECKING, Protocol
-from ai_conversation_client.interface import IAIConversationClient
-from ai_conversation_client.conversation import Conversation, Message, MessageRole
+from .interface import IAIConversationClient
+from .conversation import Conversation, Message, MessageRole
 
 # MyPy-safe dynamic typing for Gemini SDK
 if TYPE_CHECKING:
@@ -18,8 +18,8 @@ else:
 
 # Dynamic import that works at runtime
 genai = importlib.import_module("google.generativeai")
-genai_configure: Any = getattr(genai, "configure")
-genai_model_class: GenerativeModelConstructor = getattr(genai, "GenerativeModel")
+genai_configure: Any = genai.configure
+genai_model_class: GenerativeModelConstructor = genai.GenerativeModel
 
 load_dotenv()
 
@@ -31,20 +31,25 @@ class GeminiAPIClient(IAIConversationClient):
     It manages sessions, messages, user preferences, and generates assistant responses.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, genai_client: GenerativeModelConstructor | None = None) -> None:
         """
         Initializes the GeminiAPIClient.
 
-        Loads the Gemini API key from the environment, configures the SDK, 
+        Loads the Gemini API key from the environment, configures the SDK,
         and prepares model and session tracking.
+
+        Args:
+            genai_client (GenerativeModelConstructor, optional): The Gemini client to use. Defaults to None.
+
         """
         self._api_key = os.getenv("GEMINI_API_KEY")
-        
+
         if not self._api_key:
-            raise ValueError("Missing GEMINI_API_KEY in .env file")
+            msg = "Missing GEMINI_API_KEY in .env file"
+            raise ValueError(msg)
 
         genai_configure(api_key=self._api_key)
-        self._model: Any = genai_model_class("gemini-2.0-flash")
+        self._model: Any = genai_client or genai_model_class("gemini-2.0-flash")
 
         self._model_url = (
             f"https://generativelanguage.googleapis.com/v1beta/models/"
@@ -69,9 +74,11 @@ class GeminiAPIClient(IAIConversationClient):
         Raises:
             ValueError: If the session ID is not found.
             RuntimeError: If the Gemini API call fails.
+
         """
         if session_id not in self._sessions:
-            raise ValueError("Session not found")
+            msg = "Session not found"
+            raise ValueError(msg)
 
         convo = self._sessions[session_id]
         convo.add_message(Message(message, MessageRole.USER))
@@ -84,7 +91,8 @@ class GeminiAPIClient(IAIConversationClient):
         headers = {"Content-Type": "application/json"}
 
         try:
-            response = requests.post(self._model_url, headers=headers, json=payload)
+            response = requests.post(self._model_url, headers=headers, json=payload) # noqa: S113
+            # If they want to do a request without adding a timeout, sure.
             response.raise_for_status()
             parsed = response.json()
             text = parsed["candidates"][0]["content"]["parts"][0]["text"].strip()
@@ -98,7 +106,8 @@ class GeminiAPIClient(IAIConversationClient):
                 "timestamp": assistant_msg.timestamp.isoformat(),
             }
         except Exception as e:
-            raise RuntimeError(f"Gemini API error: {e}")
+            msg = f"Gemini API error: {e}"
+            raise RuntimeError(msg) # noqa: B904
 
     def get_chat_history(self, session_id: str) -> list[dict[str, Any]]:
         """
@@ -109,10 +118,11 @@ class GeminiAPIClient(IAIConversationClient):
 
         Returns:
             list[dict]: List of message dictionaries with ID, role, content, and timestamp.
+
         """
         if session_id not in self._sessions:
             return []
-        
+
         return [
             {
                 "message_id": m.id,
@@ -133,6 +143,7 @@ class GeminiAPIClient(IAIConversationClient):
 
         Returns:
             bool: Always returns True.
+
         """
         self._user_preferences[user_id] = preferences
         return True
@@ -146,6 +157,7 @@ class GeminiAPIClient(IAIConversationClient):
 
         Returns:
             str: The generated session ID.
+
         """
         session_id = f"sess_{uuid.uuid4().hex[:8]}"
         prompt = self._user_preferences.get(user_id, {}).get("system_prompt")
@@ -163,6 +175,7 @@ class GeminiAPIClient(IAIConversationClient):
 
         Returns:
             bool: Always returns True.
+
         """
         self._sessions.pop(session_id, None)
         self._chat_sessions.pop(session_id, None)

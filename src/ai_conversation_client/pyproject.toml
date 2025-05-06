@@ -1,28 +1,58 @@
 [project]
-name = "python-template-repo"
+name = "ai-conversation-client"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
-
+requires-python = ">=3.11"
 dependencies = [
-    "pytest>=8.3.5",
-    "pytest-cov",
-    "ruff",
-    "mypy",
-    "requests",
-    "python-dotenv",
-    "google-generativeai"
+    "google-generativeai>=0.8.5",
+    "python-dotenv>=1.1.0",
+    "requests>=2.32.3",
 ]
 
-[tool.ruff]
-line-length = 100
-exclude = ["tests/snapshots"]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "INP001",  # Ignore missing __init__.py for namespace packages
+    "D100",  # Ignore missing module-level docstrings
+    "D203", "D211",  # Conflicting rules about blank lines before class
+    "D212", "D213",  # Conflicting rules about multi-line docstrings
+    "S101",  # Ignore assert usage in tests
+    "T201",  # Ignore print statements in Logger component
+    "COM812",  # Suggested by ruff to disable it to avoid unexpected behavior
+    "PIE790", # Ignore unnecessary pass statement in interfaces
+    "ANN401", # Ignore dynamically typed expression are disallowed in interfaces
+    "F401", # Module imported but unused
+    "F823", # Local variable name shadows a built-in name
+    "PLR2004", # Too many branches
+    "ERA001", # File is not encoded with UTF-8
+    "F841", # Local variable assigned but not used
+    "F821", # Undefined name
+    "PGH003", # Use specific rule codes when ignoring type issues
+    "I001", # Import block is un-sorted or un-formatted
+    "N806", # We use camelCase
+    "BLE001", # Blind exceptions are needed when working with google api
+    "TRY300", # Else blocks not applicable in api 
+    "PTH123", # Open is safe in our case
+    "G004", # f-strings are used in main.py only and are fine there
+    # ADDITIONAL IGNORES FOR IMPORTED COMPONENT FROM TEAM 6
+    "E501", # If they used a different line length check, we don't really mind
+    "D205", # They followed a differnt schema for documentation
+    "D401", # We do not have authority to modify their docstrings
+    "D102", # We do not have authority to overwrite their docstrings
+    "D101", # We do not have authority or desire to create new docstrings for their documentation
+    "UP035", # They depend on deprecated functionality, we will not modify it
+]
 
 [tool.mypy]
-strict = true
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
 
-[dependency-groups]
-dev = [
-    "types-requests>=2.32.0.20250328",
-]
+[[tool.mypy.overrides]]
+module = "requests.*"
+ignore_missing_imports = true
