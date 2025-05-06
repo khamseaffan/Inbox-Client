@@ -124,6 +124,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh # macOS/Linux
 ```bash
 # Installs all workspace members and dependencies defined in uv.lock
 uv sync --all-packages --extra dev --extra test
+source 
 ```
 
 ## Testing
@@ -146,33 +147,33 @@ uvx pytest . -m "not integration"
 ### Run only integration tests (requires local .env or CI context)
 
 ```bash
-uvx pytest . -m integration
+pytest . -m integration
 ```
 
 ### Run with coverage (unit tests only)
 
 ```bash
-uvx pytest . -m "not integration" --cov=src --cov-report=term-missing
+pytest . -m "not integration" --cov=src --cov-report=term-missing
 ```
 
 ## Linting & Formatting
 
 ```bash
 # Check formatting
-uvx ruff format --check .
+ruff format --check .
 
 # Check linting
-uvx ruff check .
+ruff check .
 
 # Apply fixes (use with caution)
-uvx ruff check . --fix
-uvx ruff format .
+ruff check . --fix
+ruff format .
 ```
 
 ## Static Analysis
 
 ```bash
-uvx mypy src tests
+mypy src tests
 ```
 
 ## Contributions
