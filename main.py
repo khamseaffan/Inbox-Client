@@ -1,58 +1,105 @@
-from prometheus_client import start_http_server
-import time
+import argparse
+import csv
+import json
 import logging
 import os
+
 from dotenv import load_dotenv
-from inbox_client_impl import GmailClient # Or use inbox_client_protocol.get_client()
+from prometheus_client import start_http_server
+
+import message
+import inbox_client_protocol
+import inbox_client_impl
+import message_impl
 import ai_conversation_client
 
 load_dotenv()
 
-# Configure structured logging
+DEFAULT_PROMPT = """Analyze this email and return two things in JSON format:
+1. The percent probability that this email is spam (integer).
+2. The tone of the email (e.g., "formal", "casual", "urgent").
+Return JSON like: {"pct_spam": 85, "tone": "formal"}.
+Subject: {subject}, Body: {body}, From: {from_}"""
 
+logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
+
+def parse_args() -> argparse.Namespace:
+    """Parse command-line arguments for limit and prompt override."""
+    parser = argparse.ArgumentParser(description="Analyze emails using AI")
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=5,
+        help="Number of emails to process",
+    )
+    parser.add_argument(
+        "--prompt",
+        type=str,
+        default=None,
+        help="Custom prompt template",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
-    """Instantiate the client to trigger auth flow (using .env locally)."""
-    logger = logging.getLogger(__name__)
+    """Run the email analysis application."""
+    args = parse_args()
+    limit = args.limit
+    prompt_template = args.prompt or os.getenv("AI_PROMPT_TEMPLATE", DEFAULT_PROMPT)
+
     try:
-        # # Initialize Gmail client
-        # gmail_client = GmailClient()
-        # logger.info("GmailClient initialized successfully.")
+        client = inbox_client_protocol.get_client()
+        try:
+            gemini_client = ai_conversation_client.GeminiAPIClient()
+            ai_client = ai_conversation_client.AIConversationClient(gemini_client)
+        except Exception as e:
+            logger.exception("Failed to initialize Gemini API client")
+            return
 
-        # count = 0
-        # for msg in gmail_client.get_messages():
-        #     logger.info(f"Found message: ID={msg.id}, Subject='{msg.subject}'")
-        #     count += 1
-        #     if count >= 3: # Limit for testing
-        #          break
-        # logger.info(f"Finished fetching {count} messages.")
+        session_id = ai_client.start_new_session("spam_checker_user")
+        logger.info("Gemini AI Client initialized successfully.")
 
-        # Test AI conversation client using dependency injection
-        ai_client = ai_conversation_client.get_client()
-        logger.info("AI Conversation Client initialized successfully.")
+        count = 0
+        result = {}
 
-        # Start a new conversation session
-        session_id = ai_client.start_new_session(user_id="test_user")
-        logger.info(f"Started new AI conversation session with ID: {session_id}")
+        for msg in client.get_messages():
+            logger.info("Found message: ID=%s, Subject='%s'", msg.id, msg.subject)
+            try:
+                prompt = prompt_template.format(
+                    subject=msg.subject,
+                    body=msg.body,
+                    from_=msg.from_,
+                )
+                response = ai_client.send_message(session_id, prompt)
+                content = response["content"]
+                parsed = json.loads(content)
+                pct_spam = int(parsed.get("pct_spam", 0))
+                tone = parsed.get("tone", "unknown")
+                result[msg.id] = (pct_spam, tone)
+            except Exception as e:
+                logger.warning("Failed to process message %s: %s", msg.id, e)
+                result[msg.id] = (0, "unknown")
 
-        # Set preferences for the user
-        ai_client.set_user_preferences(
-            user_id="test_user",
-            preferences={"system_prompt": "You are a helpful AI assistant."}
-        )
-        logger.info("User preferences set successfully.")
+            count += 1
+            if count >= limit:
+                break
 
-        # Send a test message
-        response = ai_client.send_message(session_id, "Do you like apples?")
-        logger.info(f"Received AI response: {response['content']}")
+        logger.info("Finished analyzing %d messages.", count)
 
-    except FileNotFoundError as e:
-        logger.exception("Initialization failed")
-    except RuntimeError as e:
-        logger.exception("Credential acquisition failed")
-    except ValueError as e:
-        logger.exception("AI client error")
+        with open("output.csv", "w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(["Email ID", "Percentage Probability of SPAM", "Tone"])
+            for msg_id, (pct_spam, tone) in result.items():
+                writer.writerow([msg_id, pct_spam, tone])
+
+        logger.info("Wrote output to output.csv")
+        ai_client.end_session(session_id)
+
+    except Exception as e:
+        logger.exception("Fatal error occurred.")
+
 
 if __name__ == "__main__":
     main()
