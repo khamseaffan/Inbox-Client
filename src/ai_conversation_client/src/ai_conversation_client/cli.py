@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Command-line interface for the AI Conversation Client.
 
@@ -8,7 +7,8 @@ including starting a chat, showing message history, and managing sessions.
 
 import argparse
 import asyncio
-from ai_conversation_client.client import AIConversationClient
+from .client import AIConversationClient
+from .gemini_api_client import GeminiAPIClient
 
 async def interactive_chat(client: AIConversationClient, user_id: str) -> None:
     """
@@ -17,6 +17,7 @@ async def interactive_chat(client: AIConversationClient, user_id: str) -> None:
     Args:
         client (AIConversationClient): The conversation client instance.
         user_id (str): Unique identifier for the user.
+
     """
     session_id = client.start_new_session(user_id)
     print(f"New session started. Session ID: {session_id}")
@@ -40,12 +41,13 @@ async def interactive_chat(client: AIConversationClient, user_id: str) -> None:
         except Exception as e:
             print(f"Error: {e}")
 
-def list_sessions(client: AIConversationClient) -> None:
+def list_sessions(client: AIConversationClient) -> None: #noqa: ARG001
     """
     Placeholder function to list sessions.
 
     Args:
         client (AIConversationClient): The conversation client instance.
+
     """
     print("Session listing is not implemented for the generic interface.")
 
@@ -56,6 +58,7 @@ def show_history(client: AIConversationClient, session_id: str) -> None:
     Args:
         client (AIConversationClient): The conversation client instance.
         session_id (str): The ID of the session to show.
+
     """
     try:
         history = client.get_chat_history(session_id)
@@ -74,6 +77,7 @@ async def run_cli(client: AIConversationClient) -> None:
 
     Args:
         client (AIConversationClient): The conversation client instance.
+
     """
     parser = argparse.ArgumentParser(description="AI Conversation CLI")
     subparsers = parser.add_subparsers(dest="command")
@@ -103,8 +107,6 @@ async def run_cli(client: AIConversationClient) -> None:
 
 if __name__ == "__main__":
     import asyncio
-    from ai_conversation_client.client import AIConversationClient
-    from ai_conversation_client.gemini_api_client import GeminiAPIClient
 
     # Create the backend Gemini client and wrap it in a high-level interface
     api_client = GeminiAPIClient()
