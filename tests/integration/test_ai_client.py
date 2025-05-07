@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Generator
 
 import pytest
 from ai_conversation_client import AIConversationClient # type: ignore[import-untyped]
@@ -7,7 +7,7 @@ import os
 
 # Patch environment variables for tests that need them
 @pytest.mark.integration
-def mock_env_vars():
+def mock_env_vars()-> Generator[None, None, None]:  
     """Provide environment variables for testing."""
     with patch.dict(os.environ, {
         "GMAIL_CLIENT_ID": "test-client-id",
