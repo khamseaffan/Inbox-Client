@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "prometheus-client>=0.21.1",
     "python-dotenv>=1.1.0",
+    "types-requests>=2.32.0.20250328",
 ]
 
 [build-system]
@@ -56,7 +57,7 @@ _ = "cov"
 
 # --- RUFF ---
 [tool.ruff]
-line-length = 88  # Default formatting width
+line-length = 100  # Default formatting width
 target-version = "py311"  # Adjust based on actual Python version
 
 [tool.ruff.lint]
@@ -84,6 +85,9 @@ ignore = [
     "TRY300", # Else blocks not applicable in api 
     "PTH123", # Open is safe in our case
     "G004", # f-strings are used in main.py only and are fine there
+    "LOG015", # logs are valid on root
+    "PTH110", # We use old-school paths
+    "PTH107", # We use old-school paths
 ]
 
 
@@ -147,7 +151,8 @@ omit = [
     "src/*/tests/*",       # Exclude all files in any src/<package>/tests/ directory
     ".venv/*",             # Standard practice: exclude virtual environment
     "*/__main__.py",       # Exclude main entry points if any
-    "**/test_*.py"
+    "**/test_*.py",
+    "src/ai_conversation_client/*"
 ]
 
 [tool.coverage.report]

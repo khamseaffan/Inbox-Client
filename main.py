@@ -11,7 +11,7 @@ import message
 import inbox_client_protocol
 import inbox_client_impl
 import message_impl
-import ai_conversation_client
+import ai_conversation_client # type: ignore[import-untyped]
 
 load_dotenv()
 
@@ -40,6 +40,11 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Custom prompt template",
     )
+    parser.add_argument(
+        "--interactive",
+        action="store_true",  # Add interactive flag
+        help="Force interactive login for email client, ignoring saved tokens/env vars.",
+    )
     return parser.parse_args()
 
 
@@ -47,10 +52,12 @@ def main() -> None:
     """Run the email analysis application."""
     args = parse_args()
     limit = args.limit
+    interactive = args.interactive
     prompt_template = args.prompt or os.getenv("AI_PROMPT_TEMPLATE", DEFAULT_PROMPT)
 
     try:
-        client = inbox_client_protocol.get_client()
+        # Pass the interactive flag to get_client using keyword argument
+        client = inbox_client_protocol.get_client(interactive=interactive)
         try:
             gemini_client = ai_conversation_client.GeminiAPIClient()
             ai_client = ai_conversation_client.AIConversationClient(gemini_client)
@@ -66,6 +73,7 @@ def main() -> None:
 
         for msg in client.get_messages():
             logger.info("Found message: ID=%s, Subject='%s'", msg.id, msg.subject)
+            logger.info("Message body: %s", msg.body)
             try:
                 prompt = prompt_template.format(
                     subject=msg.subject,

@@ -24,7 +24,7 @@ def test_get_messages() -> None:
 def test_send_message() -> None:
     """Test send_message method returns True for valid parameters."""
     client = inbox_client_protocol.get_client()
-    result = client.send_message("kc4433@gmail.com", "Subject", "Body")
+    result = client.send_message("iae225@nyu.edu", "Subject", "Body")
     # Assert that send_message returns True as expected
     assert result is True
 
