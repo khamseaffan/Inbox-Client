@@ -78,12 +78,14 @@ def test_init_with_env_vars(mock_getenv, mock_creds_class, mock_request, mock_bu
     mock_build.assert_called_once_with("gmail", "v1", credentials=mock_creds_instance)
     assert client.service == mock_build.return_value
 
-def test_get_messages_get_error(gmail_client: GmailClient, mock_google_service: MagicMock, capsys) -> None: # type: ignore[no-untyped-def] # noqa: E501, ANN001, ARG001
+def test_get_messages_get_error(
+    gmail_client: GmailClient, mock_google_service: MagicMock
+) -> None:
     """Test get_messages handles API errors during get."""
     list_response = {"messages": [{"id": "msg1"}]}
-    mock_google_service.users.return_value.messages.return_value.list.return_value.execute.return_value = list_response # noqa: E501
+    mock_google_service.users.return_value.messages.return_value.list.return_value.execute.return_value = list_response  # noqa: E501
     # Simulate error on the 'get' call
-    mock_google_service.users.return_value.messages.return_value.get.return_value.execute.side_effect = Exception("Get API Failed") # noqa: E501
+    mock_google_service.users.return_value.messages.return_value.get.return_value.execute.side_effect = Exception("Get API Failed")  # noqa: E501
 
     # Consume the iterator - it should likely yield nothing or raise
     messages_iter = gmail_client.get_messages()
@@ -93,5 +95,72 @@ def test_get_messages_get_error(gmail_client: GmailClient, mock_google_service: 
 
     # Verify list was called, but get might have been called once before error
     mock_google_service.users.return_value.messages.return_value.list.assert_called_once()
-    mock_google_service.users.return_value.messages.return_value.get.assert_called_once_with(userId="me", id="msg1", format="raw") # noqa: E501
+    mock_google_service.users.return_value.messages.return_value.get.assert_called_once_with(userId="me", id="msg1", format="raw")  # noqa: E501
+
+def test_send_message_success(
+    gmail_client: GmailClient, mock_google_service: MagicMock
+) -> None:
+    """Test send_message returns True on successful send."""
+    (
+        mock_google_service.users.return_value.messages.return_value.send.return_value.execute.return_value
+    ) = {"id": "sent_id_123"}
+    result = gmail_client.send_message("to@example.com", "Subject", "Body")
+    assert result is True
+    mock_google_service.users.return_value.messages.return_value.send.assert_called_once()
+
+def test_send_message_failure(
+    gmail_client: GmailClient, mock_google_service: MagicMock
+) -> None:
+    """Test send_message returns False on exception."""
+    (
+        mock_google_service.users.return_value.messages.return_value.send.return_value.execute.side_effect
+    ) = Exception("Send failed")
+    result = gmail_client.send_message("to@example.com", "Subject", "Body")
+    assert result is False
+
+def test_delete_message_success(
+    gmail_client: GmailClient, mock_google_service: MagicMock
+) -> None:
+    """Test delete_message returns True on successful delete."""
+    (
+        mock_google_service.users.return_value.messages.return_value.delete.return_value.execute.return_value
+    ) = {}
+    result = gmail_client.delete_message("msgid123")
+    assert result is True
+    mock_google_service.users.return_value.messages.return_value.delete.assert_called_once_with(
+        userId="me", id="msgid123"
+    )
+
+def test_delete_message_failure(
+    gmail_client: GmailClient, mock_google_service: MagicMock
+) -> None:
+    """Test delete_message returns False on exception."""
+    (
+        mock_google_service.users.return_value.messages.return_value.delete.return_value.execute.side_effect
+    ) = Exception("Delete failed")
+    result = gmail_client.delete_message("msgid123")
+    assert result is False
+
+def test_mark_as_read_success(
+    gmail_client: GmailClient, mock_google_service: MagicMock
+) -> None:
+    """Test mark_as_read returns True on successful modify."""
+    (
+        mock_google_service.users.return_value.messages.return_value.modify.return_value.execute.return_value
+    ) = {}
+    result = gmail_client.mark_as_read("msgid123")
+    assert result is True
+    mock_google_service.users.return_value.messages.return_value.modify.assert_called_once_with(
+        userId="me", id="msgid123", body={"removeLabelIds": ["UNREAD"]}
+    )
+
+def test_mark_as_read_failure(
+    gmail_client: GmailClient, mock_google_service: MagicMock
+) -> None:
+    """Test mark_as_read returns False on exception."""
+    (
+        mock_google_service.users.return_value.messages.return_value.modify.return_value.execute.side_effect
+    ) = Exception("Modify failed")
+    result = gmail_client.mark_as_read("msgid123")
+    assert result is False
 
