@@ -104,7 +104,7 @@ class GmailMessage(message.Message):
                 content_disposition = part.get("Content-Disposition", "")
 
                 # Look for plain text parts that are not attachments
-                if content_type == "text/plain" and "attachment" not in content_disposition: # noqa: E501
+                if content_type == "text/plain" and "attachment" not in content_disposition:
                     try:
                         # Decode payload, handling potential encoding issues
                         payload = part.get_payload(decode=True)

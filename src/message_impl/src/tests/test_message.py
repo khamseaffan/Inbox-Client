@@ -125,10 +125,10 @@ def test_gmailmessage_missing_headers() -> None:
 
 def test_gmailmessage_date_parsing() -> None:
     """Test date formatting and fallback."""
-    gm_valid = GmailMessage("id_date1", create_raw_data(date_str="Fri, 25 Apr 2025 15:30:10 -0400")) # noqa: E501
+    gm_valid = GmailMessage("id_date1", create_raw_data(date_str="Fri, 25 Apr 2025 15:30:10 -0400"))
     assert gm_valid.date == "04/25/2025"
 
-    gm_invalid_format = GmailMessage("id_date2", create_raw_data(date_str="Invalid Date String")) # noqa: E501
+    gm_invalid_format = GmailMessage("id_date2", create_raw_data(date_str="Invalid Date String"))
     assert gm_invalid_format.date == "Invalid Date String" # Fallback
 
     gm_no_date = GmailMessage("id_date3", create_raw_data(date_str=""))

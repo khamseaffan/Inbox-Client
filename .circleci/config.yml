@@ -88,12 +88,16 @@ jobs:
             # Use coverage CLI now that pytest has run it
             coverage report --fail-under=70
             coverage json -o test-results/unit/coverage.json # Generate JSON report
+            coverage html -d test-results/unit/htmlcov
       - store_test_results:
           path: test-results/unit
       - store_artifacts: # Store coverage reports
           path: coverage.xml
       - store_artifacts:
           path: test-results/unit/coverage.json
+      - store_artifacts:
+          path: test-results/unit/htmlcov
+          destination: coverage-html
 
   # Job 4: Integration Tests (Requires Secrets)
   integration_test:
